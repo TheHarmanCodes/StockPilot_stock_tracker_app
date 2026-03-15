@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -22,7 +21,7 @@ const UserDropdown = () => {
     router.push("/sign-in");
   };
 
-  const user = { name: "John", email: "contact@hsb.com" };
+  const user = { name: "Harman Singh", email: "Harman.in@hsb.com" };
 
   return (
     <DropdownMenu>

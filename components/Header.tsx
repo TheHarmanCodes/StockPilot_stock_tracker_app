@@ -14,6 +14,7 @@ const Header = () => {
             width={140}
             height={32}
             className="h-9 w-auto cursor-pointer"
+            loading="eager"
           />
         </Link>
         <nav className="hidden sm:block">
