@@ -13,7 +13,7 @@ const Header = () => {
             alt="StockPilot logo"
             width={140}
             height={32}
-            className="h-9 w-auto cursor-pointer"
+            className="h-10 w-auto cursor-pointer"
             loading="eager"
           />
         </Link>
