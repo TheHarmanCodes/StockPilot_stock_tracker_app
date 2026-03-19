@@ -128,11 +128,10 @@ const SignUp = () => {
           label="Preferred Industry"
           placeholder="Select your preferred industry"
           control={control}
-          error={errors.investmentGoals}
+          error={errors.preferredIndustry}
           options={PREFERRED_INDUSTRIES}
           required
         />
-
         <Button
           type="submit"
           disabled={isSubmitting}

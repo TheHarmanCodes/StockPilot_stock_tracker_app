@@ -20,7 +20,7 @@ export function TextReveal({ word }: TextAnimation) {
       <div key={reset}>
         <span className="h1">
           {WORD.split("").map((char, i) => (
-            <span style={{ "--index": i }} key={i}>
+            <span style={{ "--index": i } as React.CSSProperties} key={i}>
               {char}
             </span>
           ))}

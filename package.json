@@ -31,7 +31,7 @@
     "@types/react-dom": "^19",
     "@types/react-select-country-list": "^2.2.3",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "^16.2.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

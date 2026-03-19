@@ -67,12 +67,7 @@ const SignIn = () => {
             type="password"
             validation={{
               required: "Password is required",
-              pattern: {
-                value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()[\]{}\-_=+|\\:;"'<>,./~`])[A-Za-z\d@$!%*?&^#()[\]{}\-_=+|\\:;"'<>,./~`]{8,32}$/,
-                message:
-                  "Password must include uppercase, lowercase, number, and special character (8–32 characters).",
-              },
+              minLength: 8,
             }}
           />
 

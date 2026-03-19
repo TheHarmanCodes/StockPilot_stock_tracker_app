@@ -25,13 +25,12 @@ const InputField = ({
         placeholder={placeholder}
         disabled={disabled}
         id={name}
-        value={value}
         autoComplete={autoComplete}
         className={cn("form-input", {
           "opacity-50 cursor-not-allowed": disabled,
         })}
         {...register(name, validation)}
-      />
+      />{" "}
       {error && <p className="text-sm text-red-500">{error.message}</p>}
     </div>
   );
