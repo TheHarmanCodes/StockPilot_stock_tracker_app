@@ -24,6 +24,7 @@ export const connectToDatabase = async () => {
     cached.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false });
   }
 
+  //setting the connection and at last returning it
   try {
     cached.conn = await cached.promise;
   } catch (error) {
@@ -32,4 +33,6 @@ export const connectToDatabase = async () => {
   }
 
   console.log(`Connected to database ${process.env.NODE_ENV}`);
+
+  return cached.conn;
 };
