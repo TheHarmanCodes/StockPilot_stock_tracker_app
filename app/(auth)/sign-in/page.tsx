@@ -24,15 +24,13 @@ const SignIn = () => {
   });
 
   const onSubmit = async (data: SignInFormData) => {
-    try {
-      const result = await signInWithEmail(data);
-      if (result.success) {
-        router.push("/");
-      }
-    } catch (e) {
-      console.log(e);
+    const result = await signInWithEmail(data);
+
+    if (result.success) {
+      router.push("/");
+    } else {
       toast.error("Sign in failed", {
-        description: e instanceof Error ? e.message : "Failed to sing in",
+        description: result.error || "Failed to sign in",
       });
     }
   };
@@ -47,12 +45,7 @@ const SignIn = () => {
             <TextReveal word="Account" />
           </div>
         </h1>
-        <form
-          action=""
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-7 "
-          method="POST"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 ">
           <InputField
             name="email"
             label="Email"

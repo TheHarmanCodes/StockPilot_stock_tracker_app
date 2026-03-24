@@ -1,11 +1,18 @@
 import nodemailer from "nodemailer";
 import { WELCOME_EMAIL_TEMPLATE } from "./templates";
 
+const NODEMAILER_EMAIL = process.env.NODEMAILER_EMAIL;
+const NODEMAILER_PASSWORD = process.env.NODEMAILER_PASSWORD;
+
+if (!NODEMAILER_EMAIL || !NODEMAILER_PASSWORD) {
+  throw new Error("Missing Nodemailer SMTP credentials");
+}
+
 export const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.NODEMAILER_EMAIL,
-    pass: process.env.NODEMAILER_PASSWORD,
+    user: NODEMAILER_EMAIL,
+    pass: NODEMAILER_PASSWORD,
   },
 });
 
@@ -20,7 +27,7 @@ export const sendWelcomeEmail = async ({
   );
 
   const mailOptions = {
-    from: `"StockPilot" <hello.stockpilot@gmail.com>`,
+    from: `"StockPilot" <${NODEMAILER_EMAIL}>`,
     to: email,
     subject: `Welcome to StockPilot - your stock market toolkit is ready!`,
     text: "Thanks for joining StockPilot",
