@@ -33,16 +33,16 @@ const UserDropdown = ({ user }: { user: User }) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex items-center gap-3 text-gray-400 hover:text-yellow-500"
+          className="group flex items-center gap-3 text-gray-400 transition-colors"
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocJN3xNP6Gxk_Hq0T-JfIEGVhRbJcyIVLexMcdFGuzkOMyTn74LL=s200-c" />
-            <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold">
-              {user.name}
+            <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold group-hover:bg-yellow-400">
+              {user.name[0]}
             </AvatarFallback>
           </Avatar>
           <div className="hidden md:flex flex-col items-start">
-            <span className="text-base font-medium text-gray-400">
+            <span className="text-base font-medium text-gray-400 group-hover:text-yellow-500 transition-colors">
               {user.name}
             </span>
           </div>
@@ -54,7 +54,7 @@ const UserDropdown = ({ user }: { user: User }) => {
           <div className="flex relative items-center gap-3 py-2 ">
             <Avatar className="h-10 w-10">
               <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocJN3xNP6Gxk_Hq0T-JfIEGVhRbJcyIVLexMcdFGuzkOMyTn74LL=s200-c" />
-              <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold">
+              <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold ">
                 {user.name[0]}
               </AvatarFallback>
             </Avatar>

@@ -9,13 +9,23 @@ export const signUpWithEmail = async ({
   password,
   fullName,
   country,
+  timezone,
   investmentGoals,
   riskTolerance,
   preferredIndustry,
 }: SignUpFormData) => {
   try {
     const response = await auth.api.signUpEmail({
-      body: { email, password, name: fullName },
+      body: {
+        email,
+        password,
+        name: fullName,
+        country,
+        timezone,
+        investmentGoals,
+        riskTolerance,
+        preferredIndustry,
+      },
     });
 
     if (response) {
