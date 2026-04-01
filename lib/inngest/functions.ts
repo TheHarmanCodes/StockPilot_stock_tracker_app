@@ -70,13 +70,13 @@ export const sendSignUpEmail = inngest.createFunction(
       });
       return {
         success: true,
-        message: "Welcome email send successfully",
+        message: "Welcome email sent successfully",
       };
     });
 
     return {
       success: true,
-      message: "Process Completed. Welcome email send successfully",
+      message: "Process Completed. Welcome email sent successfully",
     };
   },
 );
@@ -84,7 +84,7 @@ export const sendSignUpEmail = inngest.createFunction(
 export const sendDailyNewsSummary = inngest.createFunction(
   {
     id: "daily-news-summary",
-    retries: 1, // Not recommended by only to prevent API call limit
+    retries: 1, // Not recommended, but only to prevent API call limit
     triggers: [{ event: "app/send.daily.news" }, { cron: "*/10 * * * *" }],
   },
   async ({ step }) => {
@@ -143,13 +143,17 @@ export const sendDailyNewsSummary = inngest.createFunction(
     const usersNewsSummaries: any[] = [];
 
     for (const { user, news } of usersWithNews) {
+      if (news.length === 0) {
+        usersNewsSummaries.push({ user, newsContent: null });
+        continue;
+      }
       try {
         const prompt = NEWS_SUMMARY_EMAIL_PROMPT.replace(
           "{{newsData}}",
           JSON.stringify(news, null, 2),
         );
 
-        const response = await step.ai.infer(`summarize-${user.email}`, {
+        const response = await step.ai.infer(`summarize-${user.id}`, {
           model: step.ai.models.gemini({
             model: "gemini-2.5-flash-lite",
           }),
@@ -176,15 +180,15 @@ export const sendDailyNewsSummary = inngest.createFunction(
         continue;
       }
 
-      await step.run(`send-email-${user.email}`, async () => {
+      await step.run(`send-email-${user.id}`, async () => {
         await sendNewsSummaryEmail({
           email: user.email,
-          date: formatDateToday,
+          date: formatDateToday(),
           newsContent,
         });
       });
 
-      await step.run(`update-${user.email}`, async () => {
+      await step.run(`update-${user.id}`, async () => {
         await updateLastNewsSentAt(user.id);
       });
     }

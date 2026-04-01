@@ -3,18 +3,18 @@
 import { formatArticle, getDateRange, validateArticle } from "@/lib/utils";
 
 const FINNHUB_BASE_URL = "https://finnhub.io/api/v1";
-const NEXT_PUBLIC_FINNHUB_API_KEY = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
+const FINNHUB_API_KEY = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
 const MAX_NEWS_ARTICLES = 6;
 const NEWS_CACHE_REVALIDATE_SECONDS = 60 * 5;
 
 type FinnhubNewsArticle = RawNewsArticle;
 
 const ensureApiKey = (): string => {
-  if (!NEXT_PUBLIC_FINNHUB_API_KEY) {
-    throw new Error("Missing NEXT_PUBLIC_FINNHUB_API_KEY");
+  if (!FINNHUB_API_KEY) {
+    throw new Error("Missing FINNHUB_API_KEY");
   }
 
-  return NEXT_PUBLIC_FINNHUB_API_KEY;
+  return FINNHUB_API_KEY;
 };
 
 const buildFinnhubUrl = (
@@ -32,7 +32,7 @@ const cleanSymbols = (symbols?: string[]): string[] => {
     new Set(
       symbols
         .map((symbol) => symbol.trim().toUpperCase())
-        .filter((symbol) => symbol.length > 0), //changelog
+        .filter((symbol) => symbol.length > 0),
     ),
   );
 };
@@ -152,20 +152,22 @@ const getRoundRobinCompanyNews = async (
 export const getNews = async (
   symbols?: string[],
 ): Promise<MarketNewsArticle[]> => {
+  const cleanedSymbols = cleanSymbols(symbols);
+  if (cleanedSymbols.length === 0) {
+    return getGeneralNews();
+  }
   try {
-    const cleanedSymbols = cleanSymbols(symbols);
-    if (cleanedSymbols.length === 0) {
-      return await getGeneralNews();
-    }
-    // if we have symbols, try to fetch company news per symbol and round-robin select
     const companyNews = await getRoundRobinCompanyNews(cleanedSymbols);
     if (companyNews.length > 0) {
       return companyNews.slice(0, MAX_NEWS_ARTICLES);
     }
-
+  } catch (error) {
+    console.error("Company news fetch failed", error);
+  }
+  try {
     return await getGeneralNews();
   } catch (error) {
-    console.error("Error fetching news", error);
+    console.error("General news fetch failed", error);
     throw new Error("Failed to fetch news");
   }
 };

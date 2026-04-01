@@ -85,20 +85,27 @@ export const formatArticle = (
   symbol?: string,
   index: number = 0,
 ) => ({
-  id: isCompanyNews ? Date.now() + Math.random() : article.id + index,
+  d: isCompanyNews
+    ? Date.now() * 1000 + Math.floor(Math.random() * 1000) + index
+    : article.id + index,
   headline: article.headline!.trim(),
-  summary:
-    article.summary!.trim().substring(0, isCompanyNews ? 200 : 150) + "...",
+  summary: (() => {
+    const trimmed = article.summary!.trim();
+    const maxLen = isCompanyNews ? 200 : 150;
+    return trimmed.length > maxLen
+      ? trimmed.substring(0, maxLen) + "..."
+      : trimmed;
+  })(),
   source: article.source || (isCompanyNews ? "Company News" : "Market News"),
   url: article.url!,
   datetime: article.datetime!,
   image: article.image || "",
   category: isCompanyNews ? "company" : article.category || "general",
-  related: isCompanyNews ? symbol! : article.related || "",
+  related: isCompanyNews ? (symbol ?? "") : article.related || "",
 });
 
 export const formatChangePercent = (changePercent?: number) => {
-  if (!changePercent) return "";
+  if (changePercent == null) return "";
   const sign = changePercent > 0 ? "+" : "";
   return `${sign}${changePercent.toFixed(2)}%`;
 };
@@ -116,13 +123,25 @@ export const formatPrice = (price: number) => {
   }).format(price);
 };
 
-export const formatDateToday = new Date().toLocaleDateString("en-US", {
-  weekday: "long",
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-  timeZone: "UTC",
-});
+export const formatDateToday = (timeZone: string = "UTC") => {
+  try {
+    return new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone,
+    });
+  } catch {
+    return new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+  }
+};
 
 export const getAlertText = (alert: Alert) => {
   const condition = alert.alertType === "upper" ? ">" : "<";
@@ -139,37 +158,38 @@ export const getFormattedTodayDate = () =>
   });
 
 export const isTimeToSend = (timezone: string) => {
-  const now = new Date();
-
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: timezone,
-    hour: "numeric",
-    minute: "numeric",
-    hour12: false,
-  });
-
-  const parts = formatter.formatToParts(now);
-
-  const hours = Number(parts.find((p) => p.type === "hour")?.value);
-  const minutes = Number(parts.find((p) => p.type === "minute")?.value);
-
-  return hours === 8 && minutes >= 15 && minutes <= 45;
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(now);
+    const hours = Number(parts.find((p) => p.type === "hour")?.value);
+    const minutes = Number(parts.find((p) => p.type === "minute")?.value);
+    return hours === 8 && minutes >= 15 && minutes <= 45;
+  } catch {
+    return false;
+  }
 };
 
 export const alreadySentToday = (user: any) => {
-  if (!user.lastNewsSentAt) return false;
+  try {
+    const timezone = user.timezone || "UTC";
 
-  const timezone = user.timezone || "UTC";
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
 
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: timezone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-
-  const last = formatter.format(new Date(user.lastNewsSentAt));
-  const now = formatter.format(new Date());
-
-  return last === now;
+    const last = formatter.format(new Date(user.lastNewsSentAt));
+    const now = formatter.format(new Date());
+    return last === now;
+  } catch {
+    return false;
+  }
 };

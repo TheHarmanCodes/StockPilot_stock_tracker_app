@@ -25,16 +25,15 @@ export const getWatchlistSymbolsByEmail = async (
   email: string,
 ): Promise<string[]> => {
   try {
-    if (!email?.trim()) return [];
-
+    const normalizedEmail = email?.trim().toLowerCase();
+    if (!normalizedEmail) return [];
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     if (!db) return [];
-
     // Better-auth stores users in the "user" collection
     const user = await db
       .collection<BetterAuthUserRecord>(USER_COLLECTION_NAME)
-      .findOne({ email });
+      .findOne({ email: normalizedEmail });
 
     const userId = resolveUserId(user);
     if (!userId) return [];

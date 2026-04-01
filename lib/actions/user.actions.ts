@@ -28,9 +28,9 @@ export const getAllUsersForNewsEmail = async () => {
       .toArray();
 
     return users
-      .filter((user) => user.email && user.name)
+      .filter((user) => user.email && user.name && user._id)
       .map((user) => ({
-        id: user.id || user._id?.toString() || "",
+        id: user._id.toString(),
         email: user.email,
         name: user.name,
         timezone: user.timezone,
@@ -49,14 +49,14 @@ export const updateLastNewsSentAt = async (userId: string) => {
 
     if (!db) throw new Error("Mongoose connection not connected");
 
-    await db
+    const result = await db
       .collection("user")
       .updateOne(
         { _id: new ObjectId(userId) },
         { $set: { lastNewsSentAt: new Date() } },
       );
 
-    return { success: true };
+    return { success: result.matchedCount > 0 };
   } catch (err) {
     console.error("Error updating lastNewsSentAt:", err);
     return { success: false };

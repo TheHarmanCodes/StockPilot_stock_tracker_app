@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Notice
 
-## Getting Started
+## Copyright
 
-First, run the development server:
+© 2026 Harman Singh. All rights reserved.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Usage Restrictions
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This repository is made publicly accessible for viewing purposes only.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+No permission is granted to use, copy, modify, or distribute this code, in whole or in part, without prior written consent from the author.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
+This project is not licensed for public use. All rights remain exclusively with the author.
 
-To learn more about Next.js, take a look at the following resources:
+## Purpose
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The code is published solely for academic demonstration and portfolio purposes.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contact
 
-## Deploy on Vercel
+For any inquiries regarding permission or usage, please contact:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Harman Singh
+Harman.us@outlook.com
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Disclaimer
+
+Access to this repository does not imply any rights or permissions beyond viewing the code.
+
+Proper Documentation Out soon :)
