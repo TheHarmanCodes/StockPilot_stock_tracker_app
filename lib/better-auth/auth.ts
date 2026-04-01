@@ -21,6 +21,7 @@ export const getAuth = async () => {
     database: mongodbAdapter(db as any),
     secret: process.env.BETTER_AUTH_SECRET,
     baseURL: process.env.BETTER_AUTH_URL,
+
     emailAndPassword: {
       enabled: true,
       disableSignUp: false,
@@ -28,6 +29,29 @@ export const getAuth = async () => {
       minPasswordLength: 8,
       maxPasswordLength: 128,
       autoSignIn: true,
+    },
+    user: {
+      additionalFields: {
+        country: {
+          type: "string",
+        },
+        timezone: {
+          type: "string",
+        },
+        investmentGoals: {
+          type: "string",
+        },
+        riskTolerance: {
+          type: "string",
+        },
+        preferredIndustry: {
+          type: "string",
+        },
+        lastNewsSentAt: {
+          type: "date",
+          defaultValue: null,
+        },
+      },
     },
     plugins: [nextCookies()],
   });

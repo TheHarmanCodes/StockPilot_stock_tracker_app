@@ -1,3 +1,9 @@
+//this Global DNS override is only at development phase, later on will be removed
+import dns from "dns";
+if (process.env.NODE_ENV === "development") {
+  dns.setServers(["8.8.8.8", "1.1.1.1"]);
+}
+
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;

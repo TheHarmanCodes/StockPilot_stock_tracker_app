@@ -12,6 +12,7 @@ declare global {
     investmentGoals: string;
     riskTolerance: string;
     preferredIndustry: string;
+    timezone: string;
   };
 
   type CountrySelectProps = {

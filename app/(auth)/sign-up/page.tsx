@@ -37,7 +37,9 @@ const SignUp = () => {
   });
 
   const onSubmit = async (data: SignUpFormData) => {
-    const result = await signUpWithEmail(data);
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const result = await signUpWithEmail({ ...data, timezone });
     if (result.success) {
       router.push("/");
     } else {
