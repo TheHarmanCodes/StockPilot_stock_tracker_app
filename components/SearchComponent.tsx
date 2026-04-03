@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -38,17 +38,36 @@ export default function SearchCommand({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  const latestQueryRef = useRef("");
+
+  useEffect(() => {
+    latestQueryRef.current = searchTerm.trim();
+    if (!latestQueryRef.current) {
+      setLoading(false);
+    }
+  }, [searchTerm]);
+
   const handleSearch = useCallback(async () => {
-    if (!isSearchMode) return setStocks(initialStocks);
+    const query = searchTerm.trim();
+    if (!query) {
+      setStocks(initialStocks);
+      return;
+    }
 
     setLoading(true);
     try {
-      const results = await searchStocks(searchTerm.trim());
-      setStocks(results);
+      const results = await searchStocks(query);
+      if (latestQueryRef.current === query) {
+        setStocks(results);
+      }
     } catch {
-      setStocks([]);
+      if (latestQueryRef.current === query) {
+        setStocks([]);
+      }
     } finally {
-      setLoading(false);
+      if (latestQueryRef.current === query) {
+        setLoading(false);
+      }
     }
   }, [searchTerm, initialStocks, isSearchMode]);
 
@@ -111,30 +130,32 @@ export default function SearchCommand({
               {isSearchMode ? "No results found" : "No stocks available"}
             </div>
           ) : (
-            <ul>
+            <>
               <div className="search-count">
                 {isSearchMode ? "Search results" : "Popular stocks"}
                 {` `}({displayStocks?.length || 0})
               </div>
-              {displayStocks?.map((stock, i) => (
-                <li key={stock.symbol} className="search-item">
-                  <Link
-                    href={`/stocks/${stock.symbol}`}
-                    onClick={handleSelectStock}
-                    className="search-item-link"
-                  >
-                    <TrendingUp className="h-4 w-4 text-gray-500" />
-                    <div className="flex-1">
-                      <div className="search-item-name">{stock.name}</div>
-                      <div className="text-sm text-gray-500">
-                        {stock.symbol} | {stock.exchange} | {stock.type}
+              <ul>
+                {displayStocks?.map((stock, i) => (
+                  <li key={stock.symbol} className="search-item">
+                    <Link
+                      href={`/stocks/${encodeURIComponent(stock.symbol)}`}
+                      onClick={handleSelectStock}
+                      className="search-item-link"
+                    >
+                      <TrendingUp className="h-4 w-4 text-gray-500" />
+                      <div className="flex-1">
+                        <div className="search-item-name">{stock.name}</div>
+                        <div className="text-sm text-gray-500">
+                          {stock.symbol} | {stock.exchange} | {stock.type}
+                        </div>
                       </div>
-                    </div>
-                    <Star className="h-5" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                      <Star className="h-5" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </CommandList>
       </CommandDialog>
