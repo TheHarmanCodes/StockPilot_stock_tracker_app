@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SearchCommand from "./SearchComponent";
 
-const NavItems = ({initialStocks}: {initialStocks: StockWithWatchlistStatus}) => {
+const NavItems = ({initialStocks}: {initialStocks: StockWithWatchlistStatus[]}) => {
   const pathname = usePathname();
 
   const isActive = (path: string) => {

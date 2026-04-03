@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -38,7 +38,7 @@ export default function SearchCommand({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!isSearchMode) return setStocks(initialStocks);
 
     setLoading(true);
@@ -50,13 +50,13 @@ export default function SearchCommand({
     } finally {
       setLoading(false);
     }
-  };
+  }, [isSearchMode, initialStocks, searchTerm]);
 
   const debouncedSearch = useDebounce(handleSearch, 300);
 
   useEffect(() => {
     debouncedSearch();
-  }, [searchTerm]);
+  }, [debouncedSearch]);
 
   const handleSelectStock = () => {
     setOpen(false);
@@ -64,10 +64,23 @@ export default function SearchCommand({
     setStocks(initialStocks);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
+
   return (
     <>
       {renderAs === "text" ? (
-        <span onClick={() => setOpen(true)} className="search-text">
+        <span
+          onClick={() => setOpen(true)}
+          onKeyDown={handleKeyDown}
+          role="button"
+          tabIndex={0}
+          className="search-text"
+        >
           {buttonLabel}
         </span>
       ) : (

@@ -20,7 +20,7 @@ const UserDropdown = ({
   initialStocks,
 }: {
   user: User;
-  initialStocks: StockWithWatchlistStatus;
+  initialStocks: StockWithWatchlistStatus[];
 }) => {
   const router = useRouter();
 
@@ -82,7 +82,7 @@ const UserDropdown = ({
         </DropdownMenuItem>
         <DropdownMenuSeparator className="hidden sm:block text-gray-600" />
         <nav className="sm:hidden">
-          <NavItems />
+          <NavItems initialStocks={initialStocks} />
         </nav>
       </DropdownMenuContent>
     </DropdownMenu>
