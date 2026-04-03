@@ -64,6 +64,13 @@ export default function SearchCommand({
     setStocks(initialStocks);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
+
   return (
     <>
       {renderAs === "text" ? (
