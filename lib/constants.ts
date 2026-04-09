@@ -194,7 +194,7 @@ export const CANDLE_CHART_WIDGET_CONFIG = (symbol: string) => ({
   style: 1,
   symbol: symbol.toUpperCase(),
   theme: "dark",
-  timezone: "Etc/UTC",
+  timezone: "Asia/Kolkata",
   backgroundColor: "#141414",
   gridColor: "#141414",
   watchlist: [],
