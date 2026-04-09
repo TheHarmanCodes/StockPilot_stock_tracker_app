@@ -85,7 +85,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
   {
     id: "daily-news-summary",
     retries: 1, // Not recommended, but only to prevent API call limit
-    triggers: [{ event: "app/send.daily.news" }, { cron: "*/10 * * * *" }],
+    triggers: [{ event: "app/send.daily.news" }, { cron: "*/20 * * * *" }],
   },
   async ({ step }) => {
     // -------------------------------
@@ -138,7 +138,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
     }
 
     // -------------------------------
-    // Step 3: AI
+    // Step 3: Summarize the news using AI Model
     // -------------------------------
     const usersNewsSummaries: any[] = [];
 
