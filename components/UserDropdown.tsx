@@ -42,7 +42,7 @@ const UserDropdown = ({
           className="group flex items-center gap-3 text-gray-400 transition-colors"
         >
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocJN3xNP6Gxk_Hq0T-JfIEGVhRbJcyIVLexMcdFGuzkOMyTn74LL=s200-c" />
+            {/* <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocJN3xNP6Gxk_Hq0T-JfIEGVhRbJcyIVLexMcdFGuzkOMyTn74LL=s200-c" /> */}
             <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold group-hover:bg-yellow-400">
               {user.name?.[0] ?? "U"}
             </AvatarFallback>
