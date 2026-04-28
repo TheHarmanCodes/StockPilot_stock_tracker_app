@@ -60,12 +60,11 @@ export const getWatchlistSymbolsByEmail = async (
 
 // Add stock to watchlist
 export const addToWatchList = async (symbol: string, company: string) => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session?.user) redirect("/sign-in");
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    if (!session?.user) redirect("/sign-in");
-
     // Check if stock already exists in watchlist
     const existingItem = await Watchlist.findOne({
       userId: session.user.id,
@@ -148,23 +147,23 @@ export const getWatchlistWithData = async () => {
 
     const stocksWithData = await Promise.all(
       watchlist.map(async (item) => {
-        const stockData = await getStocksDetails(item.symbol);
+        try {
+          const stockData = await getStocksDetails(item.symbol);
 
-        if (!stockData) {
-          console.warn(`Failed to fetch data for ${item.symbol}`);
+          return {
+            company: stockData.company,
+            symbol: stockData.symbol,
+            currentPrice: stockData.currentPrice,
+            priceFormatted: stockData.priceFormatted,
+            changeFormatted: stockData.changeFormatted,
+            changePercent: stockData.changePercent,
+            marketCap: stockData.marketCapFormatted,
+            peRatio: stockData.peRatio,
+          };
+        } catch (err) {
+          console.warn(`Failed to fetch data for ${item.symbol}`, err);
           return item;
         }
-
-        return {
-          company: stockData.company,
-          symbol: stockData.symbol,
-          currentPrice: stockData.currentPrice,
-          priceFormatted: stockData.priceFormatted,
-          changeFormatted: stockData.changeFormatted,
-          changePercent: stockData.changePercent,
-          marketCap: stockData.marketCapFormatted,
-          peRatio: stockData.peRatio,
-        };
       }),
     );
 

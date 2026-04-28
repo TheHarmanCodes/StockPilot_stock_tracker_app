@@ -17,14 +17,18 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
   const { symbol } = await params;
   const scriptUrl = `https://s3.tradingview.com/external-embedding/embed-widget-`;
 
-  const stockData = await getStocksDetails(symbol.toUpperCase());
-  const watchlist = await getUserWatchlist();
+  const upperSymbol = symbol.toUpperCase();
+  const [stockResult, watchlist] = await Promise.all([
+    getStocksDetails(upperSymbol).catch(() => null),
+    getUserWatchlist(),
+  ]);
+
+  if (!stockResult) notFound();
+  const stockData = stockResult;
 
   const isInWatchlist = watchlist.some(
-    (item: WatchlistItem) => item.symbol === symbol.toUpperCase(),
+    (item: WatchlistItem) => item.symbol === upperSymbol,
   );
-
-  if (!stockData) notFound();
 
   return (
     <div className="flex min-h-screen p-4 md:p-6 lg:p-8">

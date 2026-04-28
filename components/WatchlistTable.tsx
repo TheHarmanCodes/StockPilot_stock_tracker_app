@@ -57,8 +57,16 @@ export function WatchlistTable({ watchlist }: WatchlistTableProps) {
               <TableCell className="table-cell">
                 {item.peRatio || "—"}
               </TableCell>
-              <TableCell>
-                <Button className="add-alert">Add Alert</Button>
+              <TableCell onClick={(e) => e.stopPropagation()}>
+                <Button
+                  className="add-alert"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // TODO: open alert dialog
+                  }}
+                >
+                  Add Alert
+                </Button>
               </TableCell>
               <TableCell>
                 <WatchlistButton

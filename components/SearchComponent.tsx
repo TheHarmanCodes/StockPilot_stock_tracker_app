@@ -85,12 +85,11 @@ export default function SearchCommand({
   };
 
   // Handle watchlist changes status change
-  const handleWatchlistChange = async (symbol: string, isAdded: boolean) => {
-    // Update current stocks
-    setStocks(
-      initialStocks?.map((stock) =>
+  const handleWatchlistChange = (symbol: string, isAdded: boolean) => {
+    setStocks((prev) =>
+      (prev ?? []).map((stock) =>
         stock.symbol === symbol ? { ...stock, isInWatchlist: isAdded } : stock,
-      ) || [],
+      ),
     );
   };
 
@@ -124,7 +123,7 @@ export default function SearchCommand({
           {loading && <Loader2 className="search-loader" />}
         </div>
 
-        <CommandList className="search-list">
+        <CommandList className="search-list scrollbar-hide-default">
           {loading ? (
             <CommandEmpty className="search-list-empty">
               Loading stocks...

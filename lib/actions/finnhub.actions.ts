@@ -187,16 +187,16 @@ export const getNews = async (
 
 export const searchStocks = cache(
   async (query?: string): Promise<StockWithWatchlistStatus[]> => {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session?.user) redirect("/sign-in");
+
+    const userWatchlistSymbols = await getWatchlistSymbolsByEmail(
+      session.user.email,
+    );
+
     try {
-      const session = await auth.api.getSession({
-        headers: await headers(),
-      });
-      if (!session?.user) redirect("/sign-in");
-
-      const userWatchlistSymbols = await getWatchlistSymbolsByEmail(
-        session.user.email,
-      );
-
       const token = process.env.FINNHUB_API_KEY;
       if (!token) {
         // If no token, log and return empty to avoid throwing per requirements
@@ -268,9 +268,7 @@ export const searchStocks = cache(
             name,
             exchange,
             type,
-            isInWatchlist: userWatchlistSymbols.includes(
-              r.symbol.toUpperCase(),
-            ),
+            isInWatchlist: userWatchlistSymbols.includes(upper),
           };
           return item;
         })
@@ -312,8 +310,8 @@ export const getStocksDetails = cache(async (symbol: string) => {
     const financialsData = financials as FinancialsData;
 
     // Check if we got valid quote and profile data
-    if (!quoteData?.c || !profileData?.name)
-      throw new Error("Invalid stock data received from API");
+    // if we have no data for this symbol - let the caller render a 404
+    if (!quoteData?.c || !profileData?.name) return null;
 
     const changePercent = quoteData.dp || 0;
     const peRatio = financialsData?.metric?.peNormalizedAnnual || null;
