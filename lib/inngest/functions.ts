@@ -84,9 +84,11 @@ export const sendSignUpEmail = inngest.createFunction(
 export const sendDailyNewsSummary = inngest.createFunction(
   {
     id: "daily-news-summary",
-    retries: 1, // Not recommended, but only to prevent API call limit
-    triggers: [{ event: "app/send.daily.news" }, { cron: "*/20 * * * *" }],
+    retries: 2, // but only to prevent API call limit
+    // */30 * * * *"
+    triggers: [{ event: "app/send.daily.news" }, { cron: "*/30 * * * *" }],
   },
+
   async ({ step }) => {
     // -------------------------------
     // Step 1: Fetch all users

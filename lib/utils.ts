@@ -169,7 +169,7 @@ export const isTimeToSend = (timezone: string) => {
     const parts = formatter.formatToParts(now);
     const hours = Number(parts.find((p) => p.type === "hour")?.value);
     const minutes = Number(parts.find((p) => p.type === "minute")?.value);
-    return hours === 8 && minutes >= 15 && minutes <= 45;
+    return hours === 8 && minutes >= 0 && minutes <= 59;
   } catch {
     return false;
   }

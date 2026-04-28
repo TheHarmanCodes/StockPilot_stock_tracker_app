@@ -15,16 +15,12 @@ export const signUpWithEmail = async ({
   preferredIndustry,
 }: SignUpFormData) => {
   try {
+    if (!auth) throw new Error("Auth not initialized");
     const response = await auth.api.signUpEmail({
       body: {
         email,
         password,
         name: fullName,
-        country,
-        timezone,
-        investmentGoals,
-        riskTolerance,
-        preferredIndustry,
       },
     });
 
@@ -32,9 +28,11 @@ export const signUpWithEmail = async ({
       await inngest.send({
         name: "app/user.created",
         data: {
+          userId: response.user.id,
           email,
           name: fullName,
           country,
+          timezone,
           investmentGoals,
           riskTolerance,
           preferredIndustry,
@@ -50,6 +48,7 @@ export const signUpWithEmail = async ({
 
 export const signInWithEmail = async ({ email, password }: SignInFormData) => {
   try {
+    if (!auth) throw new Error("Auth not initialized");
     const response = await auth.api.signInEmail({
       body: { email, password },
     });
