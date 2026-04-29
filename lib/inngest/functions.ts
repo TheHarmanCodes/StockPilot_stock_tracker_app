@@ -86,7 +86,6 @@ export const sendDailyNewsSummary = inngest.createFunction(
   {
     id: "daily-news-summary",
     retries: 2, // but only to prevent API call limit
-    // */30 * * * *"
     triggers: [{ event: "app/send.daily.news" }, { cron: "*/30 * * * *" }],
   },
 

@@ -21,6 +21,11 @@ export const signUpWithEmail = async ({
         email,
         password,
         name: fullName,
+        country,
+        timezone,
+        investmentGoals,
+        riskTolerance,
+        preferredIndustry,
       },
     });
 

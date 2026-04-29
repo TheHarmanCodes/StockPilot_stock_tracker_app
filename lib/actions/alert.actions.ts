@@ -166,12 +166,25 @@ export const updateAlert = async (alertId: string, payload: AlertPayload) => {
     await connectToDatabase();
     const user = await getCurrentUser();
     const normalized = normalizeAlertPayload(payload);
+    const watchlistItem = await Watchlist.findOne({
+      userId: user.id,
+      symbol: normalized.symbol,
+    });
 
+    if (!watchlistItem) {
+      return {
+        success: false,
+        message: "Add this stock to your watchlist before updating the alert.",
+      };
+    }
     const updated = await AlertModel.findOneAndUpdate(
       { _id: alertId, userId: user.id },
       {
-        ...normalized,
-        isActive: true,
+        $set: {
+          ...normalized,
+          isActive: true,
+        },
+        $unset: { lastTriggeredAt: 1 },
       },
       { new: true },
     );

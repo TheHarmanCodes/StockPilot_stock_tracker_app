@@ -3,7 +3,12 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { deleteAlert } from "@/lib/actions/alert.actions";
-import { cn, formatPrice, getAlertText, getChangeColorClass } from "@/lib/utils";
+import {
+  cn,
+  formatPrice,
+  getAlertText,
+  getChangeColorClass,
+} from "@/lib/utils";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { AlertModal } from "./AlertModal";
@@ -71,7 +76,9 @@ export function AlertsList({ alerts, watchlist }: AlertsListPanelProps) {
                 </div>
                 <div className="text-right">
                   <p className="alert-price">
-                    {alert.currentPrice ? formatPrice(alert.currentPrice) : "—"}
+                    {alert.currentPrice != null
+                      ? formatPrice(alert.currentPrice)
+                      : "—"}
                   </p>
                   <p
                     className={cn(
@@ -79,7 +86,7 @@ export function AlertsList({ alerts, watchlist }: AlertsListPanelProps) {
                       getChangeColorClass(alert.changePercent),
                     )}
                   >
-                    {alert.changePercent
+                    {alert.changePercent != null
                       ? `${alert.changePercent > 0 ? "+" : ""}${alert.changePercent.toFixed(2)}%`
                       : "—"}
                   </p>
@@ -103,6 +110,7 @@ export function AlertsList({ alerts, watchlist }: AlertsListPanelProps) {
                     variant="ghost"
                     size="icon-sm"
                     className="alert-update-btn"
+                    aria-label="Edit alert"
                     title="Edit alert"
                     onClick={() => {
                       setEditingAlert(alert);
@@ -115,6 +123,7 @@ export function AlertsList({ alerts, watchlist }: AlertsListPanelProps) {
                     variant="ghost"
                     size="icon-sm"
                     className="alert-delete-btn"
+                    aria-label="Delete alert"
                     title="Delete alert"
                     disabled={isPending}
                     onClick={() => handleDelete(alert.id)}

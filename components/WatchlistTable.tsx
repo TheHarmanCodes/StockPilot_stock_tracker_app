@@ -55,7 +55,16 @@ export function WatchlistTable({ watchlist, onAddAlert }: WatchlistTableProps) {
                 router.push(`/stocks/${encodeURIComponent(item.symbol)}`)
               }
             >
-              <TableCell className="pl-4 table-cell">{item.company}</TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()} className="pl-5">
+                <WatchlistButton
+                  symbol={item.symbol}
+                  company={item.company}
+                  isInWatchlist={true}
+                  showTrashIcon={true}
+                  type="icon"
+                />
+              </TableCell>
+              <TableCell className=" table-cell">{item.company}</TableCell>
               <TableCell className="table-cell">{item.symbol}</TableCell>
               <TableCell className="table-cell">
                 {item.priceFormatted || "—"}
@@ -88,15 +97,6 @@ export function WatchlistTable({ watchlist, onAddAlert }: WatchlistTableProps) {
                 >
                   Add Alert
                 </Button>
-              </TableCell>
-              <TableCell onClick={(e) => e.stopPropagation()}>
-                <WatchlistButton
-                  symbol={item.symbol}
-                  company={item.company}
-                  isInWatchlist={true}
-                  showTrashIcon={true}
-                  type="icon"
-                />
               </TableCell>
             </TableRow>
           ))}

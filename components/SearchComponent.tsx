@@ -140,27 +140,32 @@ export default function SearchCommand({
               </div>
               <ul>
                 {displayStocks?.map((stock, i) => (
-                  <li key={stock.symbol} className="search-item">
+                  <li
+                    key={stock.symbol}
+                    className="search-item flex items-center justify-between"
+                  >
                     <Link
                       href={`/stocks/${encodeURIComponent(stock.symbol)}`}
                       onClick={handleSelectStock}
-                      className="search-item-link"
+                      className="search-item-link flex items-center gap-2 flex-1"
                     >
                       <TrendingUp className="h-4 w-4 text-gray-500" />
+
                       <div className="flex-1">
                         <div className="search-item-name">{stock.name}</div>
                         <div className="text-sm text-gray-500">
                           {stock.symbol} | {stock.exchange} | {stock.type}
                         </div>
                       </div>
-                      <WatchlistButton
-                        type="icon"
-                        symbol={stock.symbol}
-                        company={stock.name}
-                        isInWatchlist={stock.isInWatchlist}
-                        onWatchlistChange={handleWatchlistChange}
-                      />
                     </Link>
+
+                    <WatchlistButton
+                      type="icon"
+                      symbol={stock.symbol}
+                      company={stock.name}
+                      isInWatchlist={stock.isInWatchlist}
+                      onWatchlistChange={handleWatchlistChange}
+                    />
                   </li>
                 ))}
               </ul>

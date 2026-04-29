@@ -328,6 +328,7 @@ export const NO_MARKET_NEWS =
   '<p class="mobile-text" style="margin:0 0 20px 0;font-size:16px;line-height:1.6;color:#4b5563;">No market news available today. Please check back tomorrow.</p>';
 
 export const WATCHLIST_TABLE_HEADER = [
+  "Action",
   "Company",
   "Symbol",
   "Price",
@@ -335,5 +336,4 @@ export const WATCHLIST_TABLE_HEADER = [
   "Market Cap",
   "P/E Ratio",
   "Alert",
-  "Action",
 ];
