@@ -48,7 +48,6 @@ export const signUpWithEmail = async ({
 
 export const signInWithEmail = async ({ email, password }: SignInFormData) => {
   try {
-    if (!auth) throw new Error("Auth not initialized");
     const response = await auth.api.signInEmail({
       body: { email, password },
     });

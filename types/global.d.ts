@@ -135,6 +135,7 @@ declare global {
 
   type WatchlistTableProps = {
     watchlist: StockWithData[];
+    onAddAlert?: (stock: SelectedStock) => void;
   };
 
   type StockWithData = {
@@ -155,7 +156,7 @@ declare global {
   };
 
   type MarketNewsArticle = {
-    id: number;
+    id?: number;
     headline: string;
     summary: string;
     source: string;
@@ -185,7 +186,8 @@ declare global {
     company: string;
     alertName: string;
     alertType: "upper" | "lower";
-    threshold: string;
+    threshold: string | number;
+    frequency?: "once" | "hourly" | "daily";
   };
 
   type AlertModalProps = {
@@ -217,6 +219,9 @@ declare global {
     alertType: "upper" | "lower";
     threshold: number;
     changePercent?: number;
+    frequency: "once" | "hourly" | "daily";
+    isActive: boolean;
+    lastTriggeredAt?: string;
   };
 }
 

@@ -84,7 +84,7 @@ export default function SearchCommand({
     setStocks(initialStocks);
   };
 
-  // Handle watchlist changes status change
+  // Handle watchlist status change
   const handleWatchlistChange = (symbol: string, isAdded: boolean) => {
     setStocks((prev) =>
       (prev ?? []).map((stock) =>

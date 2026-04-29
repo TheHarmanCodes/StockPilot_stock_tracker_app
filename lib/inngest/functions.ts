@@ -1,4 +1,5 @@
 import { getNews } from "../actions/finnhub.actions";
+import { checkAndSendTriggeredAlerts } from "../actions/alert.actions";
 import {
   getAllUsersForNewsEmail,
   updateLastNewsSentAt,
@@ -199,5 +200,21 @@ export const sendDailyNewsSummary = inngest.createFunction(
       success: true,
       message: "Done",
     };
+  },
+);
+
+export const checkStockPriceAlerts = inngest.createFunction(
+  {
+    id: "check-stock-price-alerts",
+    retries: 2,
+    triggers: [{ event: "app/check.stock.alerts" }, { cron: "*/15 * * * *" }],
+  },
+  async ({ step }) => {
+    const result = await step.run(
+      "check-and-send-triggered-alerts",
+      checkAndSendTriggeredAlerts,
+    );
+
+    return result;
   },
 );

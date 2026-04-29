@@ -13,8 +13,25 @@ import { Button } from "./ui/button";
 import WatchlistButton from "./WatchlistButton";
 import { useRouter } from "next/navigation";
 import { cn, getChangeColorClass } from "@/lib/utils";
+interface WatchlistTableProps {
+  watchlist: Array<{
+    symbol: string;
+    company: string;
+    priceFormatted?: string;
+    changePercent?: number;
+    changeFormatted?: string;
+    marketCap?: string;
+    peRatio?: string;
+    currentPrice?: number;
+  }>;
+  onAddAlert?: (data: {
+    symbol: string;
+    company: string;
+    currentPrice?: number;
+  }) => void;
+}
 
-export function WatchlistTable({ watchlist }: WatchlistTableProps) {
+export function WatchlistTable({ watchlist, onAddAlert }: WatchlistTableProps) {
   const router = useRouter();
 
   return (
@@ -62,13 +79,17 @@ export function WatchlistTable({ watchlist }: WatchlistTableProps) {
                   className="add-alert"
                   onClick={(e) => {
                     e.stopPropagation();
-                    // TODO: open alert dialog
+                    onAddAlert?.({
+                      symbol: item.symbol,
+                      company: item.company,
+                      currentPrice: item.currentPrice,
+                    });
                   }}
                 >
                   Add Alert
                 </Button>
               </TableCell>
-              <TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()}>
                 <WatchlistButton
                   symbol={item.symbol}
                   company={item.company}

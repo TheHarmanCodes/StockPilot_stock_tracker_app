@@ -65,6 +65,7 @@ export const addToWatchList = async (symbol: string, company: string) => {
   });
   if (!session?.user) redirect("/sign-in");
   try {
+    await connectToDatabase();
     // Check if stock already exists in watchlist
     const existingItem = await Watchlist.findOne({
       userId: session.user.id,
@@ -93,12 +94,12 @@ export const addToWatchList = async (symbol: string, company: string) => {
 
 // Remove stock from watchlist
 export const removeFromWatchlist = async (symbol: string) => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session?.user) redirect("/sign-in");
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    if (!session?.user) redirect("/sign-in");
-
+    await connectToDatabase();
     // Remove from watchlist
     await Watchlist.deleteOne({
       userId: session.user.id,
@@ -114,12 +115,12 @@ export const removeFromWatchlist = async (symbol: string) => {
 
 // Get user's watchlist
 export const getUserWatchlist = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session?.user) redirect("/sign-in");
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    if (!session?.user) redirect("/sign-in");
-
+    await connectToDatabase();
     const watchlist = await Watchlist.find({ userId: session.user.id })
       .sort({ addedAt: -1 })
       .lean();
@@ -149,7 +150,9 @@ export const getWatchlistWithData = async () => {
       watchlist.map(async (item) => {
         try {
           const stockData = await getStocksDetails(item.symbol);
-
+          if (stockData == null) {
+            return item;
+          }
           return {
             company: stockData.company,
             symbol: stockData.symbol,

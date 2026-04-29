@@ -2,13 +2,15 @@ import React from "react";
 import { Star } from "lucide-react";
 import SearchCommand from "@/components/SearchComponent";
 import { searchStocks } from "@/lib/actions/finnhub.actions";
-import { WatchlistTable } from "@/components/WatchlistTable";
 import { getWatchlistWithData } from "@/lib/actions/watchlist.actions";
+import { getUserAlerts } from "@/lib/actions/alert.actions";
+import { WatchlistWorkspace } from "@/components/WatchlistWorkspace";
 
 const Watchlist = async () => {
-  const [watchlist, initialStocks] = await Promise.all([
+  const [watchlist, initialStocks, alerts] = await Promise.all([
     getWatchlistWithData(),
     searchStocks(),
+    getUserAlerts(),
   ]);
 
   // when watchlist is in empty state
@@ -34,7 +36,7 @@ const Watchlist = async () => {
           <h2 className="watchlist-title">Watchlist</h2>
           <SearchCommand initialStocks={initialStocks} />
         </div>
-        <WatchlistTable watchlist={watchlist} />
+        <WatchlistWorkspace watchlist={watchlist} alerts={alerts} />
       </div>
     </section>
   );

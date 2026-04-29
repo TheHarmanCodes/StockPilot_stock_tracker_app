@@ -20,7 +20,7 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
   const upperSymbol = symbol.toUpperCase();
   const [stockResult, watchlist] = await Promise.all([
     getStocksDetails(upperSymbol).catch(() => null),
-    getUserWatchlist(),
+    getUserWatchlist().catch(() => []),
   ]);
 
   if (!stockResult) notFound();
@@ -60,7 +60,7 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
         <div className="flex flex-col gap-6 lg:col-span-1">
           <div className="flex items-center justify-between">
             <WatchlistButton
-              symbol={symbol}
+              symbol={upperSymbol}
               company={stockData.company}
               isInWatchlist={isInWatchlist}
               type="button"
