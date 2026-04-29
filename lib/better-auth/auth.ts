@@ -5,9 +5,9 @@ import { nextCookies } from "better-auth/next-js";
 
 // authInstance (Singleton instance) -> it ensures that we only create one instance
 // which prevent multiple connections and improve performance.
-let authInstance: ReturnType<typeof betterAuth> | null = null;
+let authInstance: Awaited<ReturnType<typeof getAuth>> | null = null;
 
-export const getAuth = async () => {
+export const getAuth = async (): Promise<any> => {
   if (authInstance) return authInstance;
 
   const mongoose = await connectToDatabase();
@@ -60,4 +60,3 @@ export const getAuth = async () => {
 };
 
 export const auth = await getAuth();
-// export const auth = getAuth;

@@ -1,0 +1,107 @@
+"use client";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { WATCHLIST_TABLE_HEADER } from "@/lib/constants";
+import { Button } from "./ui/button";
+import WatchlistButton from "./WatchlistButton";
+import { useRouter } from "next/navigation";
+import { cn, getChangeColorClass } from "@/lib/utils";
+interface WatchlistTableProps {
+  watchlist: Array<{
+    symbol: string;
+    company: string;
+    priceFormatted?: string;
+    changePercent?: number;
+    changeFormatted?: string;
+    marketCap?: string;
+    peRatio?: string;
+    currentPrice?: number;
+  }>;
+  onAddAlert?: (data: {
+    symbol: string;
+    company: string;
+    currentPrice?: number;
+  }) => void;
+}
+
+export function WatchlistTable({ watchlist, onAddAlert }: WatchlistTableProps) {
+  const router = useRouter();
+
+  return (
+    <>
+      <Table className="scrollbar-hide-default watchlist-table">
+        <TableHeader>
+          <TableRow className="table-header-row">
+            {WATCHLIST_TABLE_HEADER.map((label) => (
+              <TableHead className="table-header" key={label}>
+                {label}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {watchlist.map((item, index) => (
+            <TableRow
+              key={item.symbol + index}
+              className="table-row"
+              onClick={() =>
+                router.push(`/stocks/${encodeURIComponent(item.symbol)}`)
+              }
+            >
+              <TableCell onClick={(e) => e.stopPropagation()} className="pl-5">
+                <WatchlistButton
+                  symbol={item.symbol}
+                  company={item.company}
+                  isInWatchlist={true}
+                  showTrashIcon={true}
+                  type="icon"
+                />
+              </TableCell>
+              <TableCell className=" table-cell">{item.company}</TableCell>
+              <TableCell className="table-cell">{item.symbol}</TableCell>
+              <TableCell className="table-cell">
+                {item.priceFormatted || "—"}
+              </TableCell>
+              <TableCell
+                className={cn(
+                  "table-cell",
+                  getChangeColorClass(item.changePercent),
+                )}
+              >
+                {item.changeFormatted || "—"}
+              </TableCell>
+              <TableCell className="table-cell">
+                {item.marketCap || "—"}
+              </TableCell>
+              <TableCell className="table-cell">
+                {item.peRatio || "—"}
+              </TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()}>
+                <Button
+                  className="add-alert"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddAlert?.({
+                      symbol: item.symbol,
+                      company: item.company,
+                      currentPrice: item.currentPrice,
+                    });
+                  }}
+                >
+                  Add Alert
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
+  );
+}

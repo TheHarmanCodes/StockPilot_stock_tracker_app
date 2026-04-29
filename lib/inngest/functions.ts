@@ -1,4 +1,5 @@
 import { getNews } from "../actions/finnhub.actions";
+import { checkAndSendTriggeredAlerts } from "../actions/alert.actions";
 import {
   getAllUsersForNewsEmail,
   updateLastNewsSentAt,
@@ -84,9 +85,10 @@ export const sendSignUpEmail = inngest.createFunction(
 export const sendDailyNewsSummary = inngest.createFunction(
   {
     id: "daily-news-summary",
-    retries: 1, // Not recommended, but only to prevent API call limit
-    triggers: [{ event: "app/send.daily.news" }, { cron: "*/20 * * * *" }],
+    retries: 2, // but only to prevent API call limit
+    triggers: [{ event: "app/send.daily.news" }, { cron: "*/30 * * * *" }],
   },
+
   async ({ step }) => {
     // -------------------------------
     // Step 1: Fetch all users
@@ -197,5 +199,21 @@ export const sendDailyNewsSummary = inngest.createFunction(
       success: true,
       message: "Done",
     };
+  },
+);
+
+export const checkStockPriceAlerts = inngest.createFunction(
+  {
+    id: "check-stock-price-alerts",
+    retries: 2,
+    triggers: [{ event: "app/check.stock.alerts" }, { cron: "*/15 * * * *" }],
+  },
+  async ({ step }) => {
+    const result = await step.run(
+      "check-and-send-triggered-alerts",
+      checkAndSendTriggeredAlerts,
+    );
+
+    return result;
   },
 );

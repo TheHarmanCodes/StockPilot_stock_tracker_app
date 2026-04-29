@@ -275,7 +275,7 @@
     @apply text-gray-500 mb-6 max-w-md;
   }
   .watchlist-container {
-    @apply flex flex-col-reverse lg:grid lg:grid-cols-3 gap-8;
+    @apply flex flex-col lg:grid lg:grid-cols-3 gap-8;
   }
   .watchlist {
     @apply lg:col-span-2 space-y-8;
@@ -343,6 +343,33 @@
   .alert-dialog {
     @apply bg-gray-800 border-gray-600 text-gray-400 max-w-md;
   }
+  .alert-form {
+    @apply flex flex-col gap-4;
+  }
+  .alert-form-field {
+    @apply flex flex-col gap-2 text-sm font-medium text-gray-400;
+  }
+  .alert-form-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+  }
+  .alert-input {
+    @apply h-11 border-gray-600 bg-gray-900/60 text-gray-100 placeholder:text-gray-500 focus-visible:border-yellow-500! focus-visible:ring-0;
+  }
+  .alert-select-trigger {
+    @apply w-full h-11! border-gray-600 bg-gray-900/60 text-gray-100 focus-visible:border-yellow-500! focus-visible:ring-0;
+  }
+  .alert-current-price {
+    @apply rounded border border-gray-600 bg-gray-900/60 px-3 py-2 text-sm text-gray-300;
+  }
+  .alert-submit-btn {
+    @apply h-11 rounded bg-yellow-500 text-black hover:bg-yellow-400 font-semibold cursor-pointer;
+  }
+  .alert-panel-header {
+    @apply flex w-full items-center justify-between gap-3;
+  }
+  .alert-create-btn {
+    @apply h-10 rounded bg-yellow-500 px-4 text-black hover:bg-yellow-400 font-semibold cursor-pointer;
+  }
   .alert-title {
     @apply text-xl font-semibold text-gray-100;
   }
@@ -368,7 +395,10 @@
     @apply text-gray-100 font-bold;
   }
   .alert-actions {
-    @apply flex items-end justify-between;
+    @apply flex items-end justify-between gap-3;
+  }
+  .alert-frequency {
+    @apply mt-2 inline-flex rounded bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400;
   }
   .alert-update-btn {
     @apply text-gray-400 rounded-full bg-transparent hover:bg-green-500/15 cursor-pointer;
@@ -457,6 +487,7 @@
 
 /* Custom scrollbar that shows on hover */
 .scrollbar-hide-default {
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
 }
