@@ -206,7 +206,7 @@ export const checkStockPriceAlerts = inngest.createFunction(
   {
     id: "check-stock-price-alerts",
     retries: 2,
-    triggers: [{ event: "app/check.stock.alerts" }, { cron: "*/15 * * * *" }],
+    triggers: [{ event: "app/check.stock.alerts" }, { cron: "*/30 * * * *" }],
   },
   async ({ step }) => {
     const result = await step.run(
