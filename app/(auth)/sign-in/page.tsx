@@ -39,12 +39,14 @@ const SignIn = () => {
     <>
       <div className=" lg:px-14 lg:mt-15 ">
         <h1 className="text-3xl font-medium text-gray-400 mb-10">
-          <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-2">
             <TextReveal word="Login" />
             <TextReveal word="Your" />
             <TextReveal word="Account" />
           </div>
+          <span className="block sm:hidden form-title">Login Your Account</span>
         </h1>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 ">
           <InputField
             name="email"

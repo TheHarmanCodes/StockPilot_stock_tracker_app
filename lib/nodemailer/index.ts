@@ -5,6 +5,7 @@ import {
   STOCK_ALERT_UPPER_EMAIL_TEMPLATE,
   WELCOME_EMAIL_TEMPLATE,
 } from "./templates";
+import { UNSUBSCRIBE_URL } from "../constants";
 
 const NODEMAILER_EMAIL = process.env.NODEMAILER_EMAIL;
 const NODEMAILER_PASSWORD = process.env.NODEMAILER_PASSWORD;
@@ -103,7 +104,7 @@ export const sendStockAlertEmail = async ({
     currentPrice,
     targetPrice,
     timestamp,
-    unsubscribeUrl: "https://stockpilot.vercel.app/",
+    unsubscribeUrl: UNSUBSCRIBE_URL,
   });
 
   const mailOptions = {

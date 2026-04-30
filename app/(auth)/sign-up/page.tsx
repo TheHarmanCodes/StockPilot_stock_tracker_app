@@ -50,15 +50,19 @@ const SignUp = () => {
   };
   return (
     <>
-      <h1 className="form-title">
-        <div className="flex items-center gap-2">
+      <h1 className="text-3xl font-medium text-gray-400 mb-10">
+        <div className="hidden sm:flex items-center gap-2">
           <TextReveal word="Sign" />
           <TextReveal word="Up" />
           <TextReveal word="&" />
           <TextReveal word="Personalize" />
         </div>
-        {/* Sign Up & Personalize */}
+        <span className="block sm:hidden form-title">
+          Sign Up & Personalize
+        </span>
       </h1>
+
+      {/* Sign Up & Personalize */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <InputField
           name="fullName"

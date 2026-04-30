@@ -337,3 +337,8 @@ export const WATCHLIST_TABLE_HEADER = [
   "P/E Ratio",
   "Alert",
 ];
+
+export const UNSUBSCRIBE_URL =
+  "https://stockpilotpro.vercel.app/unsubscribe-dailynews";
+
+export const DASHBOARD_URL = "https://stockpilotpro.vercel.app/";

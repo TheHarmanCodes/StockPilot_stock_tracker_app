@@ -1,3 +1,5 @@
+import { DASHBOARD_URL } from "../constants";
+
 export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,7 +143,7 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 40px 0; width: 100%;">
                                 <tr>
                                     <td align="center">
-                                        <a href="https://stockpilot.vercel.app/" style="display: block; width: 100%; background: linear-gradient(135deg, #FDD458 0%, #E8BA40 100%); color: #000000; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1; text-align: center; box-sizing: border-box;">
+                                        <a href="${DASHBOARD_URL}"style="display: block; width: 100%; background: linear-gradient(135deg, #FDD458 0%, #E8BA40 100%); color: #000000; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1; text-align: center; box-sizing: border-box;">
                                             Go to Dashboard
                                         </a>
                                     </td>
@@ -149,12 +151,70 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                             </table>
                             
                             <!-- Footer Text -->
-                            <p class="mobile-text dark-text-muted" style="margin: 40px 0 0 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important; text-align: center;">
-                               StockPilot HQ, 200 Market Street, San Francisco, CA 94105<br>
-                                <a href="{{unsubscribeUrl}}" style="color: #CCDADC !important; text-decoration: underline;">Unsubscribe</a> | 
-                                <a href="https://stockpilot.vercel.app/" style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a><br>
-                                © 2026 StockPilot
-                            </p>
+                              <p
+                  class="mobile-text dark-text-muted"
+                  style="
+                    margin: 40px 0 0 0;
+                    font-size: 14px;
+                    line-height: 1.5;
+                    color: #ccdadc !important;
+                    text-align: center;
+                  "
+                >
+                  <strong
+                    ><span style="font-weight: 600; letter-spacing: 0.5px"
+                      >StockPilot</span
+                    ></strong
+                  >
+                  – Intelligent Stock Market Insights Platform<br />
+                  A demonstration project showcasing real-time market tracking
+                  and analytics<br />
+                  <i
+                    >For educational purposes only. This is not financial
+                    advice.</i
+                  ><br /><br />
+
+                  <a
+                    href="{{unsubscribeUrl}}"
+                    style="
+                      color: #ccdadc !important;
+                      text-decoration: underline;
+                    "
+                    >Unsubscribe</a
+                  >
+                  |
+                  <a
+                    href="${DASHBOARD_URL}"
+                    style="
+                      color: #ccdadc !important;
+                      text-decoration: underline;
+                    "
+                    >Visit Dashboard</a
+                  >
+                  |
+                  <a
+                    href="https://github.com/TheHarmanCodes"
+                    target="_blank"
+                    style="
+                      color: #ccdadc !important;
+                      text-decoration: underline;
+                      display: inline-flex;
+                      align-items: center;
+                      gap: 4px;
+                    "
+                  >
+                    <img
+                      src="https://github.githubassets.com/assets/apple-touch-icon-144x144-b882e354c005.png"
+                      alt="GitHub"
+                      width="16"
+                      height="16"
+                      style="vertical-align: middle; border: none"
+                    />
+                    Developer GitHub </a
+                  ><br />
+
+                  © 2026 StockPilot. All rights reserved.
+                </p>
                         </td>
                     </tr>
                     
@@ -288,7 +348,7 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                 </p>
                                 <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     <a href="{{unsubscribeUrl}}" style="color: #CCDADC !important; text-decoration: underline;">Unsubscribe</a> | 
-                                    <a href="https://stockpilot.vercel.app" style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
+                                    <a href="${DASHBOARD_URL}"style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
                                 </p>
                                 <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     © 2026 StockPilot
@@ -483,7 +543,7 @@ export const STOCK_ALERT_UPPER_EMAIL_TEMPLATE = `<!DOCTYPE html>
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 30px;">
                                 <tr>
                                     <td align="center">
-                                        <a href="https://stockpilot.vercel.app/" style="display: block; width: 100%; max-width: 100%; box-sizing: border-box; color: #000000; background-color: #E8BA40; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1; text-align: center;">
+                                        <a href="${DASHBOARD_URL}"style="display: block; width: 100%; max-width: 100%; box-sizing: border-box; color: #000000; background-color: #E8BA40; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1; text-align: center;">
                                             View Dashboard
                                         </a>
                                     </td>
@@ -497,7 +557,7 @@ export const STOCK_ALERT_UPPER_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                 </p>
                                 <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     <a href="{{unsubscribeUrl}}" style="color: #CCDADC !important; text-decoration: underline;">Unsubscribe</a> | 
-                                    <a href="https://stockpilot.vercel.app" style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
+                                    <a href="${DASHBOARD_URL}"style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
                                 </p>
                                 <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     © 2026 StockPilot
@@ -692,7 +752,7 @@ export const STOCK_ALERT_LOWER_EMAIL_TEMPLATE = `<!DOCTYPE html>
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 30px;">
                                 <tr>
                                     <td align="center">
-                                        <a href="https://stockpilot.vercel.app/" style="display: block; width: 100%; max-width: 100%; box-sizing: border-box; background-color: #E8BA40; color: #000000; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1; text-align: center;">
+                                        <a href="${DASHBOARD_URL}"style="display: block; width: 100%; max-width: 100%; box-sizing: border-box; background-color: #E8BA40; color: #000000; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1; text-align: center;">
                                             View Dashboard
                                         </a>
                                     </td>
@@ -706,7 +766,7 @@ export const STOCK_ALERT_LOWER_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                 </p>
                                 <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     <a href="{{unsubscribeUrl}}" style="color: #CCDADC !important; text-decoration: underline;">Unsubscribe</a> | 
-                                    <a href="https://stockpilot.vercel.app" style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
+                                    <a href="${DASHBOARD_URL}"style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
                                 </p>
                                 <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     © 2026 StockPilot
@@ -905,7 +965,7 @@ export const VOLUME_ALERT_EMAIL_TEMPLATE = `<!DOCTYPE html>
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 30px;">
                                 <tr>
                                     <td align="center">
-                                        <a href="https://stockpilot.vercel.app/" style="display: inline-block; background-color: #E8BA40; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1;">
+                                        <a href="${DASHBOARD_URL}"style="display: inline-block; background-color: #E8BA40; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 1;">
                                             View Dashboard
                                         </a>
                                     </td>
@@ -926,7 +986,7 @@ export const VOLUME_ALERT_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                 </p>
                                 <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     <a href="{{unsubscribeUrl}}" style="color: #CCDADC !important; text-decoration: underline;">Unsubscribe</a> | 
-                                    <a href="https://stockpilot.vercel.app" style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
+                                    <a href="${DASHBOARD_URL}"style="color: #CCDADC !important; text-decoration: underline;">Visit StockPilot</a>
                                 </p>
                                 <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #CCDADC !important;">
                                     © 2026 StockPilot
