@@ -4,7 +4,13 @@ import NavItems from "./NavItems";
 import UserDropdown from "./UserDropdown";
 import { searchStocks } from "@/lib/actions/finnhub.actions";
 
-const Header = async ({ user }: { user: User }) => {
+const Header = async ({
+  user,
+  isDailyNewsSubscribed,
+}: {
+  user: User;
+  isDailyNewsSubscribed: boolean;
+}) => {
   let initialStocks: StockWithWatchlistStatus[] = [];
   try {
     initialStocks = await searchStocks();
@@ -27,7 +33,11 @@ const Header = async ({ user }: { user: User }) => {
         <nav className="hidden sm:block">
           <NavItems initialStocks={initialStocks} />
         </nav>
-        <UserDropdown user={user} initialStocks={initialStocks} />
+        <UserDropdown
+          user={user}
+          initialStocks={initialStocks}
+          isDailyNewsSubscribed={isDailyNewsSubscribed}
+        />
       </div>
     </header>
   );

@@ -7,6 +7,7 @@ import { auth } from "@/lib/better-auth/auth";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getStocksDetails } from "./finnhub.actions";
+import { setEmailSubscriptionStatus } from "./email-subscription.actions";
 
 type BetterAuthUserRecord = {
   _id?: { toString: () => string } | null;
@@ -83,6 +84,15 @@ export const addToWatchList = async (symbol: string, company: string) => {
       company: company.trim(),
     });
     await newItem.save();
+    if (session.user.email) {
+      // Adding a stock signals renewed interest, so we automatically resume daily summaries.
+      await setEmailSubscriptionStatus({
+        userId: session.user.id,
+        email: session.user.email,
+        isSubscribed: true,
+        source: "watchlist_add",
+      });
+    }
     // Todo: add toast before commit
     revalidatePath("/watchlist");
     return { success: true, message: "Stock added to watchlist." };

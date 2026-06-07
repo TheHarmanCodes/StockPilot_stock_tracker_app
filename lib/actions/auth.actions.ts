@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { auth } from "../better-auth/auth";
 import { inngest } from "../inngest/client";
+import { ensureEmailSubscriptionRecord } from "./email-subscription.actions";
 
 export const signUpWithEmail = async ({
   email,
@@ -30,6 +31,13 @@ export const signUpWithEmail = async ({
     });
 
     if (response) {
+      // New accounts start subscribed so the daily summary works immediately unless they opt out later.
+      await ensureEmailSubscriptionRecord({
+        userId: response.user.id,
+        email,
+        source: "sign_up",
+      });
+
       await inngest.send({
         name: "app/user.created",
         data: {

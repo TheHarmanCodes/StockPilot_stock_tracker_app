@@ -2,6 +2,7 @@
 
 import { connectToDatabase } from "@/database/mongoose";
 import { ObjectId } from "mongodb";
+import EmailSubscription from "@/database/models/email-subscription.model";
 
 export const getAllUsersForNewsEmail = async () => {
   try {
@@ -27,6 +28,25 @@ export const getAllUsersForNewsEmail = async () => {
       )
       .toArray();
 
+    // We join user records with subscription records so Inngest can skip unsubscribed users.
+    const emails = users
+      .map((user) => user.email)
+      .filter((email): email is string => Boolean(email))
+      .map((email) => email.trim().toLowerCase());
+
+    const subscriptions = await EmailSubscription.find({
+      email: { $in: emails },
+    })
+      .select({ email: 1, isSubscribed: 1, _id: 0 })
+      .lean<{ email: string; isSubscribed: boolean }[]>();
+
+    const subscriptionMap = new Map(
+      subscriptions.map((subscription) => [
+        subscription.email,
+        subscription.isSubscribed,
+      ]),
+    );
+
     return users
       .filter((user) => user.email && user.name && user._id)
       .map((user) => ({
@@ -35,6 +55,7 @@ export const getAllUsersForNewsEmail = async () => {
         name: user.name,
         timezone: user.timezone,
         lastNewsSentAt: user.lastNewsSentAt,
+        isDailyNewsSubscribed: subscriptionMap.get(user.email.toLowerCase()) ?? true,
       }));
   } catch (err) {
     console.log("Error while fetching users for news email ", err);

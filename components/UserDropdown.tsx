@@ -10,19 +10,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { BellOff, BellRing, Loader2, LogOut } from "lucide-react";
 import NavItems from "./NavItems";
 import { signOut } from "@/lib/actions/auth.actions";
+import {
+  subscribeCurrentUserToDailyNews,
+  unsubscribeCurrentUserFromDailyNews,
+} from "@/lib/actions/email-subscription.actions";
+import { toast } from "sonner";
+import { useTransition } from "react";
 
 const UserDropdown = ({
   user,
   initialStocks,
+  isDailyNewsSubscribed,
 }: {
   user: User;
   initialStocks: StockWithWatchlistStatus[];
+  isDailyNewsSubscribed: boolean;
 }) => {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleSignOut = async () => {
     const result = await signOut();
@@ -32,6 +41,34 @@ const UserDropdown = ({
 
     router.replace("/sign-in");
     router.refresh();
+  };
+
+  // Toggles the daily-summary preference directly from the profile dropdown.
+  const handleDailyNewsSubscription = () => {
+    startTransition(async () => {
+      const result = isDailyNewsSubscribed
+        ? await unsubscribeCurrentUserFromDailyNews()
+        : await subscribeCurrentUserToDailyNews();
+
+      if (result.success) {
+        toast.success(
+          isDailyNewsSubscribed
+            ? "Daily summary unsubscribed"
+            : "Daily summary subscribed",
+          {
+            description: isDailyNewsSubscribed
+              ? "You will stop receiving daily news summary emails."
+              : "Daily news summary emails are active again.",
+          },
+        );
+        router.refresh();
+        return;
+      }
+
+      toast.error("Could not update email preference", {
+        description: result.message,
+      });
+    });
   };
 
   return (
@@ -72,6 +109,26 @@ const UserDropdown = ({
             </div>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator className="bg-gray-600" />
+        <DropdownMenuItem
+          disabled={isPending}
+          onSelect={(event) => {
+            event.preventDefault();
+            handleDailyNewsSubscription();
+          }}
+          className="text-gray-100 text-sm font-medium focus:bg-transparent focus:text-yellow-500 transition-colors cursor-pointer"
+        >
+          {isPending ? (
+            <Loader2 className="h-4 w-4 mr-2 hidden sm:block animate-spin" />
+          ) : isDailyNewsSubscribed ? (
+            <BellOff className="h-4 w-4 mr-2 hidden sm:block" />
+          ) : (
+            <BellRing className="h-4 w-4 mr-2 hidden sm:block" />
+          )}
+          {isDailyNewsSubscribed
+            ? "Unsubscribe daily summary"
+            : "Resubscribe daily summary"}
+        </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-gray-600" />
         <DropdownMenuItem
           onClick={handleSignOut}

@@ -1,11 +1,15 @@
 import nodemailer from "nodemailer";
 import {
+  DASHBOARD_URL,
+  buildResubscribeDailyNewsUrl,
+  buildUnsubscribeDailyNewsUrl,
+} from "../constants";
+import {
   NEWS_SUMMARY_EMAIL_TEMPLATE,
   STOCK_ALERT_LOWER_EMAIL_TEMPLATE,
   STOCK_ALERT_UPPER_EMAIL_TEMPLATE,
   WELCOME_EMAIL_TEMPLATE,
 } from "./templates";
-import { UNSUBSCRIBE_URL } from "../constants";
 
 const NODEMAILER_EMAIL = process.env.NODEMAILER_EMAIL;
 const NODEMAILER_PASSWORD = process.env.NODEMAILER_PASSWORD;
@@ -27,10 +31,12 @@ export const sendWelcomeEmail = async ({
   name,
   intro,
 }: WelcomeEmailData) => {
-  const htmlTemplate = WELCOME_EMAIL_TEMPLATE.replace("{{name}}", name).replace(
-    "{{intro}}",
+  const htmlTemplate = replaceTemplateVariables(WELCOME_EMAIL_TEMPLATE, {
+    name,
     intro,
-  );
+    unsubscribeUrl: buildUnsubscribeDailyNewsUrl(email),
+    dashboardUrl: DASHBOARD_URL,
+  });
 
   const mailOptions = {
     from: `"StockPilot" <${NODEMAILER_EMAIL}>`,
@@ -52,10 +58,15 @@ export const sendNewsSummaryEmail = async ({
   date: string;
   newsContent: string;
 }): Promise<void> => {
-  const htmlTemplate = NEWS_SUMMARY_EMAIL_TEMPLATE.replace(
-    "{{date}}",
+  // Each recipient gets direct subscribe/unsubscribe links in both the HTML and email headers.
+  const unsubscribeUrl = buildUnsubscribeDailyNewsUrl(email);
+  const resubscribeUrl = buildResubscribeDailyNewsUrl(email);
+  const htmlTemplate = replaceTemplateVariables(NEWS_SUMMARY_EMAIL_TEMPLATE, {
     date,
-  ).replace("{{newsContent}}", newsContent);
+    newsContent,
+    unsubscribeUrl,
+    dashboardUrl: DASHBOARD_URL,
+  });
 
   const mailOptions = {
     from: `"StockPilot" <${NODEMAILER_EMAIL}>`,
@@ -63,6 +74,18 @@ export const sendNewsSummaryEmail = async ({
     subject: `Market News Summary Today - ${date}`,
     text: "Today's market news summary from StockPilot",
     html: htmlTemplate,
+    list: {
+      // Mail clients can surface these as built-in subscription controls.
+      help: `mailto:${NODEMAILER_EMAIL}?subject=StockPilot%20help`,
+      unsubscribe: {
+        url: unsubscribeUrl,
+        comment: "Unsubscribe from daily summary",
+      },
+      subscribe: {
+        url: resubscribeUrl,
+        comment: "Resubscribe to daily summary",
+      },
+    },
   };
   await transporter.sendMail(mailOptions);
 };
@@ -104,7 +127,7 @@ export const sendStockAlertEmail = async ({
     currentPrice,
     targetPrice,
     timestamp,
-    unsubscribeUrl: UNSUBSCRIBE_URL,
+    unsubscribeUrl: buildUnsubscribeDailyNewsUrl(email),
   });
 
   const mailOptions = {
