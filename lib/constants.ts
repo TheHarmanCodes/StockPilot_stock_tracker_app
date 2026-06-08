@@ -338,7 +338,10 @@ export const WATCHLIST_TABLE_HEADER = [
   "Alert",
 ];
 
-export const UNSUBSCRIBE_URL =
-  "https://stockpilotpro.vercel.app/unsubscribe-dailynews";
+export const APP_BASE_URL = "https://stockpilotpro.vercel.app";
 
-export const DASHBOARD_URL = "https://stockpilotpro.vercel.app/";
+export const UNSUBSCRIBE_URL = `${APP_BASE_URL}/unsubscribe-dailynews`;
+
+export const RESUBSCRIBE_URL = `${APP_BASE_URL}/resubscribe-dailynews`;
+
+export const DASHBOARD_URL = `${APP_BASE_URL}/`;

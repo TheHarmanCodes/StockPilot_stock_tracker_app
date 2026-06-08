@@ -1,11 +1,15 @@
 import nodemailer from "nodemailer";
+import { DASHBOARD_URL } from "@/lib/constants";
+import {
+  buildResubscribeDailyNewsUrl,
+  buildUnsubscribeDailyNewsUrl,
+} from "@/lib/email-subscription-links";
 import {
   NEWS_SUMMARY_EMAIL_TEMPLATE,
   STOCK_ALERT_LOWER_EMAIL_TEMPLATE,
   STOCK_ALERT_UPPER_EMAIL_TEMPLATE,
   WELCOME_EMAIL_TEMPLATE,
 } from "./templates";
-import { UNSUBSCRIBE_URL } from "../constants";
 
 const NODEMAILER_EMAIL = process.env.NODEMAILER_EMAIL;
 const NODEMAILER_PASSWORD = process.env.NODEMAILER_PASSWORD;
@@ -27,10 +31,14 @@ export const sendWelcomeEmail = async ({
   name,
   intro,
 }: WelcomeEmailData) => {
-  const htmlTemplate = WELCOME_EMAIL_TEMPLATE.replace("{{name}}", name).replace(
-    "{{intro}}",
+  // The welcome email includes the signed unsubscribe URL so the recipient can
+  // manage preferences without exposing a raw email address in the link.
+  const htmlTemplate = replaceTemplateVariables(WELCOME_EMAIL_TEMPLATE, {
+    name,
     intro,
-  );
+    unsubscribeUrl: buildUnsubscribeDailyNewsUrl(email),
+    dashboardUrl: DASHBOARD_URL,
+  });
 
   const mailOptions = {
     from: `"StockPilot" <${NODEMAILER_EMAIL}>`,
@@ -52,10 +60,16 @@ export const sendNewsSummaryEmail = async ({
   date: string;
   newsContent: string;
 }): Promise<void> => {
-  const htmlTemplate = NEWS_SUMMARY_EMAIL_TEMPLATE.replace(
-    "{{date}}",
+  // Build fresh signed links for this specific recipient so the footer and mail
+  // client subscription controls both carry the same protected token.
+  const unsubscribeUrl = buildUnsubscribeDailyNewsUrl(email);
+  const resubscribeUrl = buildResubscribeDailyNewsUrl(email);
+  const htmlTemplate = replaceTemplateVariables(NEWS_SUMMARY_EMAIL_TEMPLATE, {
     date,
-  ).replace("{{newsContent}}", newsContent);
+    newsContent,
+    unsubscribeUrl,
+    dashboardUrl: DASHBOARD_URL,
+  });
 
   const mailOptions = {
     from: `"StockPilot" <${NODEMAILER_EMAIL}>`,
@@ -63,6 +77,19 @@ export const sendNewsSummaryEmail = async ({
     subject: `Market News Summary Today - ${date}`,
     text: "Today's market news summary from StockPilot",
     html: htmlTemplate,
+    list: {
+      // These headers mirror the footer links and point to the same signed
+      // unsubscribe/resubscribe endpoints.
+      help: `mailto:${NODEMAILER_EMAIL}?subject=StockPilot%20help`,
+      unsubscribe: {
+        url: unsubscribeUrl,
+        comment: "Unsubscribe from daily summary",
+      },
+      subscribe: {
+        url: resubscribeUrl,
+        comment: "Resubscribe to daily summary",
+      },
+    },
   };
   await transporter.sendMail(mailOptions);
 };
@@ -104,7 +131,7 @@ export const sendStockAlertEmail = async ({
     currentPrice,
     targetPrice,
     timestamp,
-    unsubscribeUrl: UNSUBSCRIBE_URL,
+    unsubscribeUrl: buildUnsubscribeDailyNewsUrl(email),
   });
 
   const mailOptions = {

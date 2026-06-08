@@ -103,10 +103,12 @@ export const sendDailyNewsSummary = inngest.createFunction(
     // FILTER USERS
     // -------------------------------
     const usersToSend = users.filter((user) => {
+      // Daily summaries go out only when the user is subscribed, in their send window, and not already emailed today.
+      const subscriptionCheck = user.isDailyNewsSubscribed;
       const timeCheck = user.timezone && isTimeToSend(user.timezone);
       const sentCheck = !alreadySentToday(user);
 
-      return timeCheck && sentCheck;
+      return subscriptionCheck && timeCheck && sentCheck;
     });
 
     if (usersToSend.length === 0) {
