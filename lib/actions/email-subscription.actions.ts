@@ -3,6 +3,10 @@
 import EmailSubscription from "@/database/models/email-subscription.model";
 import { connectToDatabase } from "@/database/mongoose";
 import { auth } from "@/lib/better-auth/auth";
+import {
+  verifyResubscribeTokenForEmail,
+  verifyUnsubscribeTokenForEmail,
+} from "@/lib/email-subscription-links";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -111,7 +115,8 @@ export const ensureEmailSubscriptionRecord = async ({
   source?: string;
 }) => {
   const normalizedEmail = normalizeEmail(email);
-  if (!normalizedEmail) return { success: false, message: "Email is required." };
+  if (!normalizedEmail)
+    return { success: false, message: "Email is required." };
 
   try {
     await connectToDatabase();
@@ -171,15 +176,11 @@ export const isEmailSubscribed = async (email: string): Promise<boolean> => {
   }
 };
 
-// Reads the logged-in user's current daily news preference for dashboard UI state.
-export const getCurrentUserDailyNewsSubscriptionStatus = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.email) redirect("/sign-in");
-
-  return isEmailSubscribed(session.user.email);
+// Reads the user's current daily news preference from an already-resolved email.
+export const getCurrentUserDailyNewsSubscriptionStatus = async (
+  email: string,
+) => {
+  return isEmailSubscribed(email);
 };
 
 // Dashboard action for turning off daily summary emails.
@@ -221,19 +222,52 @@ export const subscribeCurrentUserToDailyNews = async () => {
 };
 
 // Public email-link action for unsubscribe requests.
-export const unsubscribeDailyNewsByEmail = async (email: string) => {
-  return setEmailSubscriptionStatus({
-    email,
-    isSubscribed: false,
-    source: "email_unsubscribe_link",
-  });
+export const unsubscribeDailyNewsByEmail = async (
+  email: string,
+  token: string,
+) => {
+  try {
+    // Re-check the signed token in the action so the mutation is protected
+    // even if this helper is called from somewhere other than the page route.
+    verifyUnsubscribeTokenForEmail(email, token);
+
+    return setEmailSubscriptionStatus({
+      email,
+      isSubscribed: false,
+      source: "email_unsubscribe_link",
+    });
+  } catch (error) {
+    // Return a safe failure instead of changing subscription state when the
+    // token is invalid, expired, or does not belong to the requested email.
+    console.error("Invalid unsubscribe link:", error);
+    return {
+      success: false,
+      message: "Invalid or expired unsubscribe link.",
+    };
+  }
 };
 
 // Public email-link action for resubscribe requests.
-export const subscribeDailyNewsByEmail = async (email: string) => {
-  return setEmailSubscriptionStatus({
-    email,
-    isSubscribed: true,
-    source: "email_resubscribe_link",
-  });
+export const subscribeDailyNewsByEmail = async (
+  email: string,
+  token: string,
+) => {
+  try {
+    // Apply the same protection to the resubscribe flow so both public email
+    // links share the same signed, expiring authorization model.
+    verifyResubscribeTokenForEmail(email, token);
+
+    return setEmailSubscriptionStatus({
+      email,
+      isSubscribed: true,
+      source: "email_resubscribe_link",
+    });
+  } catch (error) {
+    // No state changes happen unless verification succeeds.
+    console.error("Invalid resubscribe link:", error);
+    return {
+      success: false,
+      message: "Invalid or expired resubscribe link.",
+    };
+  }
 };

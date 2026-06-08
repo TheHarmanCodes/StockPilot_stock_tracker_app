@@ -55,7 +55,7 @@ export const getAllUsersForNewsEmail = async () => {
         name: user.name,
         timezone: user.timezone,
         lastNewsSentAt: user.lastNewsSentAt,
-        isDailyNewsSubscribed: subscriptionMap.get(user.email.toLowerCase()) ?? true,
+          isDailyNewsSubscribed:subscriptionMap.get(user.email.trim().toLowerCase()) ?? true,
       }));
   } catch (err) {
     console.log("Error while fetching users for news email ", err);

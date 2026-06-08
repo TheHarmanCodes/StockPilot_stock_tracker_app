@@ -35,7 +35,7 @@ const UserDropdown = ({
 
   const handleSignOut = async () => {
     const result = await signOut();
-    if (result?.success === false) {
+    if (!result?.success) {
       return;
     }
 
@@ -46,28 +46,32 @@ const UserDropdown = ({
   // Toggles the daily-summary preference directly from the profile dropdown.
   const handleDailyNewsSubscription = () => {
     startTransition(async () => {
-      const result = isDailyNewsSubscribed
-        ? await unsubscribeCurrentUserFromDailyNews()
-        : await subscribeCurrentUserToDailyNews();
-
-      if (result.success) {
-        toast.success(
-          isDailyNewsSubscribed
-            ? "Daily summary unsubscribed"
-            : "Daily summary subscribed",
-          {
-            description: isDailyNewsSubscribed
-              ? "You will stop receiving daily news summary emails."
-              : "Daily news summary emails are active again.",
-          },
-        );
-        router.refresh();
-        return;
+      try {
+        const result = isDailyNewsSubscribed
+            ? await unsubscribeCurrentUserFromDailyNews()
+            : await subscribeCurrentUserToDailyNews();
+        if (result.success) {
+          toast.success(
+              isDailyNewsSubscribed
+                  ? "Daily summary unsubscribed"
+                  : "Daily summary subscribed",
+              {
+                description: isDailyNewsSubscribed
+                    ? "You will stop receiving daily news summary emails."
+                    : "Daily news summary emails are active again.",
+              },
+          );
+          router.refresh();
+          return;
+        }
+        toast.error("Could not update email preference", {
+          description: result.message,
+        });
+      } catch {
+        toast.error("Could not update email preference", {
+          description: "Please try again.",
+        });
       }
-
-      toast.error("Could not update email preference", {
-        description: result.message,
-      });
     });
   };
 
@@ -76,10 +80,9 @@ const UserDropdown = ({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="group flex items-center gap-3 text-gray-400 transition-colors"
+          className="group flex items-center gap-3 text-gray-400 transition-colors "
         >
-          <Avatar className="h-8 w-8">
-            {/* <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocJN3xNP6Gxk_Hq0T-JfIEGVhRbJcyIVLexMcdFGuzkOMyTn74LL=s200-c" /> */}
+          <Avatar className="h-8 w-8 ">
             <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold group-hover:bg-yellow-400">
               {user.name?.[0] ?? "U"}
             </AvatarFallback>
@@ -92,11 +95,10 @@ const UserDropdown = ({
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-max text-gray-400 ">
+      <DropdownMenuContent className="w-max text-gray-400 bg-gray-800">
         <DropdownMenuLabel>
           <div className="flex relative items-center gap-3 py-2 ">
             <Avatar className="h-10 w-10">
-              {/* <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocJN3xNP6Gxk_Hq0T-JfIEGVhRbJcyIVLexMcdFGuzkOMyTn74LL=s200-c" /> */}
               <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold ">
                 {user.name?.[0] ?? "U"}
               </AvatarFallback>

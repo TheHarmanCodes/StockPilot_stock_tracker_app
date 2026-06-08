@@ -345,9 +345,3 @@ export const UNSUBSCRIBE_URL = `${APP_BASE_URL}/unsubscribe-dailynews`;
 export const RESUBSCRIBE_URL = `${APP_BASE_URL}/resubscribe-dailynews`;
 
 export const DASHBOARD_URL = `${APP_BASE_URL}/`;
-
-export const buildUnsubscribeDailyNewsUrl = (email: string) =>
-  `${UNSUBSCRIBE_URL}?email=${encodeURIComponent(email.trim().toLowerCase())}`;
-
-export const buildResubscribeDailyNewsUrl = (email: string) =>
-  `${RESUBSCRIBE_URL}?email=${encodeURIComponent(email.trim().toLowerCase())}`;

@@ -1,9 +1,10 @@
 import { subscribeDailyNewsByEmail } from "@/lib/actions/email-subscription.actions";
+import { verifyResubscribeToken } from "@/lib/email-subscription-links";
 import Link from "next/link";
 
 type SubscriptionPageProps = {
   searchParams: Promise<{
-    email?: string;
+    token?: string;
   }>;
 };
 
@@ -11,10 +12,26 @@ export default async function ResubscribeDailyNewsPage({
   searchParams,
 }: SubscriptionPageProps) {
   // This page is opened from a resubscribe link and restores the user's daily email preference.
-  const { email = "" } = await searchParams;
-  const result = email
-    ? await subscribeDailyNewsByEmail(email)
-    : { success: false, message: "Missing email address." };
+  const { token = "" } = await searchParams;
+
+  let verifiedEmail = "";
+  let result = { success: false, message: "Missing resubscribe token." };
+
+  if (token) {
+    try {
+      // The resubscribe route uses the same signed-token check so only the
+      // intended recipient can restore the subscription state.
+      verifiedEmail = verifyResubscribeToken(token);
+      result = await subscribeDailyNewsByEmail(verifiedEmail, token);
+    } catch (error) {
+      // Keep the response generic so expired or modified links fail safely.
+      console.error("Failed to verify resubscribe token:", error);
+      result = {
+        success: false,
+        message: "Invalid or expired resubscribe link.",
+      };
+    }
+  }
 
   return (
     <main className="min-h-screen bg-[#0f0f0f] text-gray-100 flex items-center justify-center px-6">
@@ -29,7 +46,9 @@ export default async function ResubscribeDailyNewsPage({
         </h1>
         <p className="mt-3 text-gray-400">{result.message}</p>
         <p className="mt-6 text-sm text-gray-500">
-          Your next daily market news summary will be delivered on schedule.
+          {result.success
+            ? "Your next daily market news summary will be delivered on schedule."
+            : "Please retry from the latest email link or contact support if this persists."}
         </p>
         <Link
           href="/"

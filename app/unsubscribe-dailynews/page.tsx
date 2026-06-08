@@ -1,4 +1,5 @@
 import { unsubscribeDailyNewsByEmail } from "@/lib/actions/email-subscription.actions";
+import { verifyUnsubscribeToken } from "@/lib/email-subscription-links";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -9,17 +10,34 @@ import {
 
 type SubscriptionPageProps = {
   searchParams: Promise<{
-    email?: string;
+    token?: string;
   }>;
 };
 
 export default async function UnsubscribeDailyNewsPage({
   searchParams,
 }: SubscriptionPageProps) {
-  const { email = "" } = await searchParams;
-  const result = email
-    ? await unsubscribeDailyNewsByEmail(email)
-    : { success: false, message: "Missing email address." };
+  const { token = "" } = await searchParams;
+
+  let verifiedEmail = "";
+  let result = { success: false, message: "Missing unsubscribe token." };
+
+  if (token) {
+    try {
+      // Verify the token on the server before any unsubscribe mutation runs.
+      // This ensures the page never trusts a raw email query parameter.
+      verifiedEmail = verifyUnsubscribeToken(token);
+      result = await unsubscribeDailyNewsByEmail(verifiedEmail, token);
+    } catch (error) {
+      // Log the internal failure for diagnostics, but return a safe message to
+      // the browser so tampered or expired links do not leak details.
+      console.error("Failed to verify unsubscribe token:", error);
+      result = {
+        success: false,
+        message: "Invalid or expired unsubscribe link.",
+      };
+    }
+  }
 
   return (
     <main className="min-h-screen bg-[#0a0a0b] flex items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -65,14 +83,14 @@ export default async function UnsubscribeDailyNewsPage({
             {result.message}
           </p>
 
-          {/* Email Display (only on success) */}
-          {result.success && email && (
+          {/* Show the verified email only after the signed token has passed. */}
+          {result.success && verifiedEmail && (
             <div className="bg-[#1a1a1d] border border-white/4 rounded-2xl p-5 mb-8">
               <p className="text-[12px] text-[#6e6e73] font-medium mb-1.5 uppercase tracking-wide">
                 Unsubscribed Email
               </p>
               <p className="text-[15px] text-white font-mono tracking-tight">
-                {email}
+                {verifiedEmail}
               </p>
             </div>
           )}

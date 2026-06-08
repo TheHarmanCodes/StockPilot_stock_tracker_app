@@ -1,18 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 
 const links = [
   {
-    title: "Solution",
-    href: "#",
-  },
-  {
-    title: "Customers",
-    href: "#",
-  },
-  {
     title: "Pricing",
-    href: "/subscriptions",
+    href: "/pricing",
   },
   {
     title: "Developer GitHub",
@@ -20,7 +11,7 @@ const links = [
   },
   {
     title: "About",
-    href: "https://github.com/TheHarmanCodes/BookEcho-AI/blob/main/README.md",
+    href: "https://github.com/TheHarmanCodes/StockPilot_stock_tracker_app/blob/main/README.md",
   },
 ];
 

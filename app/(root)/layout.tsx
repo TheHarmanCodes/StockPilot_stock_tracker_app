@@ -15,7 +15,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
   // The header dropdown needs the latest subscription state to show the right action.
   const isDailyNewsSubscribed =
-    await getCurrentUserDailyNewsSubscriptionStatus();
+    await getCurrentUserDailyNewsSubscriptionStatus(session.user.email);
 
   const user = {
     id: session.user.id,

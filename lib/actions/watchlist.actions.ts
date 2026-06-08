@@ -86,14 +86,16 @@ export const addToWatchList = async (symbol: string, company: string) => {
     await newItem.save();
     if (session.user.email) {
       // Adding a stock signals renewed interest, so we automatically resume daily summaries.
-      await setEmailSubscriptionStatus({
+      const subscriptionResult = await setEmailSubscriptionStatus({
         userId: session.user.id,
         email: session.user.email,
         isSubscribed: true,
         source: "watchlist_add",
       });
+      if(!subscriptionResult.success){
+        console.warn("Watchlist added, but failed to resume daily summaries: ", subscriptionResult.message)
+      }
     }
-    // Todo: add toast before commit
     revalidatePath("/watchlist");
     return { success: true, message: "Stock added to watchlist." };
   } catch (error) {
