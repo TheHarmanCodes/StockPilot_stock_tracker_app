@@ -30,7 +30,7 @@ const Watchlist = async () => {
     );
   }
   return (
-    <section className="watchlist">
+    <section className="watchlist lg:mb-40">
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h2 className="watchlist-title">Watchlist</h2>

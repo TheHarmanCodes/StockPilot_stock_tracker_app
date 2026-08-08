@@ -60,7 +60,11 @@ export const getWatchlistSymbolsByEmail = async (
 };
 
 // Add stock to watchlist
-export const addToWatchList = async (symbol: string, company: string) => {
+export const addToWatchList = async (
+  symbol: string,
+  company: string,
+  revalidate: boolean = true,
+) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -96,7 +100,9 @@ export const addToWatchList = async (symbol: string, company: string) => {
         console.warn("Watchlist added, but failed to resume daily summaries: ", subscriptionResult.message)
       }
     }
-    revalidatePath("/watchlist");
+    if (revalidate) {
+      revalidatePath("/watchlist");
+    }
     return { success: true, message: "Stock added to watchlist." };
   } catch (error) {
     console.error("Error adding stock to watchlist (addToWatchList)", error);
@@ -105,7 +111,10 @@ export const addToWatchList = async (symbol: string, company: string) => {
 };
 
 // Remove stock from watchlist
-export const removeFromWatchlist = async (symbol: string) => {
+export const removeFromWatchlist = async (
+  symbol: string,
+  revalidate: boolean = true,
+) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -117,7 +126,9 @@ export const removeFromWatchlist = async (symbol: string) => {
       userId: session.user.id,
       symbol: symbol.toUpperCase(),
     });
-    revalidatePath("/watchlist");
+    if (revalidate) {
+      revalidatePath("/watchlist");
+    }
     return { success: true, message: "Stock removed from watchlist" };
   } catch (error) {
     console.error("Error removing from watchlist:", error);

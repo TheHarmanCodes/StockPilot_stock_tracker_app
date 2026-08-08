@@ -5,6 +5,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
 import Footer from "@/components/Footer";
+import EmailVerification from "@/components/EmailVerification";
+import { connectToDatabase } from "@/database/mongoose";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth?.api.getSession({
@@ -12,6 +14,12 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   });
 
   if (!session?.user) redirect("/sign-in");
+
+  // Check if user is verified directly from DB to be sure
+  const mongoose = await connectToDatabase();
+  const db = mongoose.connection.db;
+  const userDoc = await db?.collection("user").findOne({ email: session.user.email });
+  const isEmailVerified = userDoc?.emailVerified === true;
 
   // The header dropdown needs the latest subscription state to show the right action.
   const isDailyNewsSubscribed =
@@ -24,9 +32,12 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <main className="min-h-screen text-gray-400">
+    <main className="flex-1 flex flex-col text-gray-400">
       <Header user={user} isDailyNewsSubscribed={isDailyNewsSubscribed} />
-      <div className="container py-10">{children}</div>
+      <div className={`container py-10 flex-1 ${!isEmailVerified ? "blur-sm pointer-events-none select-none" : ""}`}>
+        {children}
+      </div>
+      {!isEmailVerified && <EmailVerification email={session.user.email} />}
       <Footer />
     </main>
   );
