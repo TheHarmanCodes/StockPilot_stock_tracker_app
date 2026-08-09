@@ -6,6 +6,8 @@ import { getWatchlistWithData } from "@/lib/actions/watchlist.actions";
 import { getUserAlerts } from "@/lib/actions/alert.actions";
 import { WatchlistWorkspace } from "@/components/WatchlistWorkspace";
 
+export const dynamic = "force-dynamic";
+
 const Watchlist = async () => {
   const [watchlist, initialStocks, alerts] = await Promise.all([
     getWatchlistWithData(),
