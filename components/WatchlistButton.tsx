@@ -16,7 +16,8 @@ const WatchlistButton = ({
   showTrashIcon = false,
   type = "button",
   onWatchlistChange,
-}: WatchlistButtonProps) => {
+  shouldRevalidate = true,
+}: WatchlistButtonProps & { shouldRevalidate?: boolean }) => {
   const [added, setAdded] = useState<boolean>(!!isInWatchlist);
 
   const label = useMemo(() => {
@@ -27,8 +28,8 @@ const WatchlistButton = ({
   // handle adding/removing stocks from watchlist
   const toggleWatchlist = async () => {
     const result = added
-      ? await removeFromWatchlist(symbol)
-      : await addToWatchList(symbol, company);
+      ? await removeFromWatchlist(symbol, shouldRevalidate)
+      : await addToWatchList(symbol, company, shouldRevalidate);
 
     if (result.success) {
       toast.success(added ? "Removed from Watchlist" : "Added to Watchlist", {

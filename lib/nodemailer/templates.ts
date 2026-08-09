@@ -1,5 +1,58 @@
 import { DASHBOARD_URL } from "../constants";
 
+export const OTP_EMAIL_TEMPLATE = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style type="text/css">
+        @media (prefers-color-scheme: dark) {
+            .email-container { background-color: #141414 !important; border: 1px solid #30333A !important; }
+            .dark-bg { background-color: #050505 !important; }
+            .dark-text { color: #ffffff !important; }
+            .dark-text-secondary { color: #9ca3af !important; }
+        }
+        @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; margin: 0 !important; }
+            .mobile-padding { padding: 24px !important; }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #050505; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #050505;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="email-container" style="max-width: 600px; background-color: #141414; border-radius: 8px; border: 1px solid #30333A;">
+                    <tr>
+                        <td align="center" class="mobile-padding" style="padding: 40px;">
+                            <img src="https://ik.imagekit.io/tvaz27dnm/logo.svg?updatedAt=1774272106870" alt="StockPilot Logo" width="120" style="margin-bottom: 30px;">
+                            <h1 style="color: #ffffff; font-size: 24px; font-weight: 600; margin: 0 0 20px 0;">Verify your email address</h1>
+                            <p style="color: #9ca3af; font-size: 16px; line-height: 24px; margin: 0 0 30px 0;">
+                                To complete your sign-up and start your investing journey, please use the following one-time password (OTP) to verify your email.
+                            </p>
+                            <div style="background-color: #050505; border: 1px solid #30333A; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                                <span style="color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: 8px; font-family: monospace;">{{otp}}</span>
+                            </div>
+                            <p style="color: #6b7280; font-size: 14px; margin: 0;">
+                                This OTP is valid for 5 minutes. If you didn't request this, you can safely ignore this email.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 0 40px 40px 40px; border-top: 1px solid #30333A;">
+                            <p style="color: #4b5563; font-size: 12px; margin: 20px 0 0 0;">
+                                &copy; 2026 StockPilot. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>`;
+
 export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
 <html lang="en">
 <head>

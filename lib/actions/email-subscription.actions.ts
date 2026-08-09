@@ -2,14 +2,13 @@
 
 import EmailSubscription from "@/database/models/email-subscription.model";
 import { connectToDatabase } from "@/database/mongoose";
-import { auth } from "@/lib/better-auth/auth";
 import {
   verifyResubscribeTokenForEmail,
   verifyUnsubscribeTokenForEmail,
 } from "@/lib/email-subscription-links";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { requireVerifiedUser } from "@/lib/auth-guard";
 
 type BetterAuthUserRecord = {
   _id?: { toString: () => string } | null;
@@ -185,15 +184,11 @@ export const getCurrentUserDailyNewsSubscriptionStatus = async (
 
 // Dashboard action for turning off daily summary emails.
 export const unsubscribeCurrentUserFromDailyNews = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.email) redirect("/sign-in");
+  const user = await requireVerifiedUser();
 
   const result = await setEmailSubscriptionStatus({
-    userId: session.user.id,
-    email: session.user.email,
+    userId: user.id,
+    email: user.email,
     isSubscribed: false,
     source: "dashboard_unsubscribe",
   });
@@ -204,15 +199,11 @@ export const unsubscribeCurrentUserFromDailyNews = async () => {
 
 // Dashboard action for turning daily summary emails back on.
 export const subscribeCurrentUserToDailyNews = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.email) redirect("/sign-in");
+  const user = await requireVerifiedUser();
 
   const result = await setEmailSubscriptionStatus({
-    userId: session.user.id,
-    email: session.user.email,
+    userId: user.id,
+    email: user.email,
     isSubscribed: true,
     source: "dashboard_subscribe",
   });

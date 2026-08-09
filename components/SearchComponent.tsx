@@ -16,7 +16,7 @@ import WatchlistButton from "./WatchlistButton";
 
 export default function SearchCommand({
   renderAs = "button",
-  buttonLabel = "Add stock",
+  buttonLabel = "Add Stocks",
   initialStocks,
 }: SearchCommandProps) {
   const [open, setOpen] = useState(false);
@@ -165,6 +165,7 @@ export default function SearchCommand({
                       company={stock.name}
                       isInWatchlist={stock.isInWatchlist}
                       onWatchlistChange={handleWatchlistChange}
+                      shouldRevalidate={false}
                     />
                   </li>
                 ))}

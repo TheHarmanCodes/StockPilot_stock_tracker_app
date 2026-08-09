@@ -6,7 +6,7 @@ import {
   sendSignUpEmail,
 } from "@/lib/inngest/functions";
 
-// expose Inngest functions via Next.js API route handlers so the
+// expose Inngest functions via Next.js API route handlers, so the
 // functions registered below are callable by the Inngest runtime.
 export const { GET, POST, PUT } = serve({
   client: inngest,

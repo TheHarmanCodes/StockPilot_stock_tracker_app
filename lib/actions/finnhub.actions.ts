@@ -11,8 +11,7 @@ import {
 import { cache } from "react";
 import { POPULAR_STOCK_SYMBOLS } from "@/lib/constants";
 import { headers } from "next/headers";
-import { auth } from "../better-auth/auth";
-import { redirect } from "next/navigation";
+import { requireVerifiedUser } from "@/lib/auth-guard";
 import { getWatchlistSymbolsByEmail } from "./watchlist.actions";
 
 const FINNHUB_BASE_URL = "https://finnhub.io/api/v1";
@@ -187,13 +186,10 @@ export const getNews = async (
 
 export const searchStocks = cache(
   async (query?: string): Promise<StockWithWatchlistStatus[]> => {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    if (!session?.user?.email) redirect("/sign-in");
+    const user = await requireVerifiedUser();
 
     const userWatchlistSymbols =
-      (await getWatchlistSymbolsByEmail(session.user.email)) ?? [];
+      (await getWatchlistSymbolsByEmail(user.email)) ?? [];
 
     try {
       const token = process.env.FINNHUB_API_KEY;
