@@ -102,7 +102,7 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
   return (
     <Dialog open={true} onOpenChange={() => {}}>
       <DialogContent 
-        className="bg-[#141414] border-[#30333A] p-8 max-w-md w-full shadow-2xl [&>button]:hidden"
+        className="bg-[#141414] border-[#30333A] p-8 max-w-md lg:max-w-lg w-full shadow-2xl [&>button]:hidden"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
