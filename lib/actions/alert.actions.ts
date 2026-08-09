@@ -7,13 +7,11 @@ import AlertModel, {
 } from "@/database/models/alert.model";
 import Watchlist from "@/database/models/watchlist.model";
 import { connectToDatabase } from "@/database/mongoose";
-import { auth } from "@/lib/better-auth/auth";
 import { sendStockAlertEmail } from "@/lib/nodemailer";
 import { formatPrice } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { getStocksDetails } from "./finnhub.actions";
+import { requireVerifiedUser } from "@/lib/auth-guard";
 
 type AlertPayload = {
   symbol: string;
@@ -43,24 +41,6 @@ const serializeAlert = (alert: Record<string, any>): Alert => ({
     : undefined,
 });
 
-const getCurrentUser = async () => {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user) redirect("/sign-in");
-    return session.user;
-  } catch (error) {
-    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-      throw error;
-    }
-    // Handle other errors
-    console.error("Error getting current user:", error);
-    redirect("/sign-in");
-  }
-};
-
 const normalizeAlertPayload = (payload: AlertPayload) => {
   const symbol = payload.symbol?.trim().toUpperCase();
   const company = payload.company?.trim();
@@ -88,7 +68,7 @@ const normalizeAlertPayload = (payload: AlertPayload) => {
 export const getUserAlerts = async (): Promise<Alert[]> => {
   try {
     await connectToDatabase();
-    const user = await getCurrentUser();
+    const user = await requireVerifiedUser();
 
     const alerts = await AlertModel.find({ userId: user.id })
       .sort({ createdAt: -1 })
@@ -119,7 +99,7 @@ export const getUserAlerts = async (): Promise<Alert[]> => {
 export const createAlert = async (payload: AlertPayload) => {
   try {
     await connectToDatabase();
-    const user = await getCurrentUser();
+    const user = await requireVerifiedUser();
     const normalized = normalizeAlertPayload(payload);
 
     const watchlistItem = await Watchlist.findOne({
@@ -164,7 +144,7 @@ export const createAlert = async (payload: AlertPayload) => {
 export const updateAlert = async (alertId: string, payload: AlertPayload) => {
   try {
     await connectToDatabase();
-    const user = await getCurrentUser();
+    const user = await requireVerifiedUser();
     const normalized = normalizeAlertPayload(payload);
     const watchlistItem = await Watchlist.findOne({
       userId: user.id,
@@ -211,7 +191,7 @@ export const updateAlert = async (alertId: string, payload: AlertPayload) => {
 export const deleteAlert = async (alertId: string) => {
   try {
     await connectToDatabase();
-    const user = await getCurrentUser();
+    const user = await requireVerifiedUser();
 
     const result = await AlertModel.deleteOne({
       _id: alertId,

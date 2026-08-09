@@ -6,10 +6,10 @@
   <br />
 
 <p align="center">
-  <img src="https://img.shields.io/badge/-Next.js-black?style=for-the-badge&logoColor=white&logo=next.js&color=black"/> 
-  <img src="https://img.shields.io/badge/-Better Auth-black?style=for-the-badge&logoColor=white&logo=betterauth&color=black"/>
-  <img src="https://img.shields.io/badge/-Shadcn-black?style=for-the-badge&logoColor=white&logo=shadcnui&color=black"/>
-  <img src="https://img.shields.io/badge/-Inngest-black?style=for-the-badge&logoColor=white&logo=inngest&color=black"/><br>
+  <img src="https://img.shields.io/badge/-Next.js-black?style=for-the-badge&logoColor=white&logo=next.js&color=black" alt="next-js"/> 
+  <img src="https://img.shields.io/badge/-Better Auth-black?style=for-the-badge&logoColor=white&logo=betterauth&color=black" alt="better-auth"/>
+  <img src="https://img.shields.io/badge/-Shadcn-black?style=for-the-badge&logoColor=white&logo=shadcnui&color=black" alt="shadcn-ui"/>
+  <img src="https://img.shields.io/badge/-Inngest-black?style=for-the-badge&logoColor=white&logo=inngest&color=black" alt="inngest"/><br>
   <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb" alt="MongoDB" />
   <img src="https://img.shields.io/badge/Tailwind--CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" />
@@ -23,8 +23,8 @@
 
 ## 📖 Table of Contents
 1. [🌟 Introduction](#-introduction)
-2. [🛠 Tech Stack](#-tech-stack)
-3. [✨ Key Features](#-key-features)
+2. [🛠 Tech Stack](#--tech-stack)
+3. [✨ Key Features](#-features)
 4. [🚀 Quick Start](#-quick-start)
 5. [👨‍💻 Developer Details](#-developer-details)
 6. [📜 License](#-license)
@@ -36,7 +36,7 @@ StockPilot is designed for investors who need more than just a watchlist. It com
 
 ---
 
-## 🛠 <a name="tech-stack">⚙️ Tech Stack</a>
+## 🛠 ⚙️ Tech Stack
 
 - **[Better Auth](https://www.better-auth.com/)**: A robust, framework-agnostic authentication library that secures StockPilot with email/password logins, social SSO, and multi-factor authentication for maximum account safety.
 
@@ -60,7 +60,7 @@ StockPilot is designed for investors who need more than just a watchlist. It com
 
 ---
 
-## ✨ <a name="features">🔋 Features</a>
+## ✨🔋 Features
 
 👉 **Stock Dashboard**: Stay on top of the market with real-time price tracking and interactive charts (line/candlestick), featuring historical data and advanced filtering by industry or performance.
 
@@ -84,7 +84,7 @@ StockPilot is designed for investors who need more than just a watchlist. It com
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/TheHarmanCodes/StockPilot_stock_tracker_app
+git clone https://github.com/TheHarmanCodes/StockPilot_stock_tracker_app stocks_app
 cd stocks_app
 ```
 

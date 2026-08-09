@@ -9,6 +9,13 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface EmailVerificationProps {
   email: string;
@@ -93,10 +100,14 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-md px-4">
-      <div className="bg-[#141414] border border-[#30333A] rounded-2xl p-8 max-w-md w-full shadow-2xl">
-        <div className="text-center mb-8">
-          <div className="bg-yellow-500/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+    <Dialog open={true} onOpenChange={() => {}}>
+      <DialogContent 
+        className="bg-[#141414] border-[#30333A] p-8 max-w-md w-full shadow-2xl [&>button]:hidden"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
+        <DialogHeader className="text-center mb-8 flex flex-col items-center">
+          <div className="bg-yellow-500/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -112,12 +123,12 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Verify your email</h2>
-          <p className="text-gray-400">
+          <DialogTitle className="text-2xl font-bold text-white mb-2">Verify your email</DialogTitle>
+          <DialogDescription className="text-gray-400">
             We've sent a 6-digit verification code to <br />
             <span className="text-gray-200 font-medium">{email}</span>
-          </p>
-        </div>
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="space-y-6">
           <div className="flex justify-center">
@@ -129,14 +140,15 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
                 if (isInvalid) setIsInvalid(false);
               }}
               onComplete={handleVerify}
+              autoFocus
             >
               <InputOTPGroup className="gap-2">
-                <InputOTPSlot index={0} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border" aria-invalid={isInvalid}/>
-                <InputOTPSlot index={1} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border" aria-invalid={isInvalid}/>
-                <InputOTPSlot index={2} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border" aria-invalid={isInvalid}/>
-                <InputOTPSlot index={3} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border" aria-invalid={isInvalid}/>
-                <InputOTPSlot index={4} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border" aria-invalid={isInvalid}/>
-                <InputOTPSlot index={5} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border" aria-invalid={isInvalid}/>
+                <InputOTPSlot index={0} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border text-white" aria-invalid={isInvalid}/>
+                <InputOTPSlot index={1} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border text-white" aria-invalid={isInvalid}/>
+                <InputOTPSlot index={2} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border text-white" aria-invalid={isInvalid}/>
+                <InputOTPSlot index={3} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border text-white" aria-invalid={isInvalid}/>
+                <InputOTPSlot index={4} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border text-white" aria-invalid={isInvalid}/>
+                <InputOTPSlot index={5} className="size-12 lg:size-14 text-xl lg:text-2xl rounded-md border text-white" aria-invalid={isInvalid}/>
               </InputOTPGroup>
             </InputOTP>
           </div>
@@ -164,8 +176,8 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
               : "Resend Verification Code"}
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

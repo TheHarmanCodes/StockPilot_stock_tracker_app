@@ -34,7 +34,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="flex-1 flex flex-col text-gray-400">
       <Header user={user} isDailyNewsSubscribed={isDailyNewsSubscribed} />
-      <div className={`container py-10 flex-1 ${!isEmailVerified ? "blur-sm pointer-events-none select-none" : ""}`}>
+      <div className={`container py-10 flex-1 ${!isEmailVerified ? "blur-sm pointer-events-none select-none overflow-hidden h-[calc(100vh-200px)]" : ""}`}>
         {children}
       </div>
       {!isEmailVerified && <EmailVerification email={session.user.email} />}

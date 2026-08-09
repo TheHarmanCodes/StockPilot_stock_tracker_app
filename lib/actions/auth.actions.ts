@@ -7,7 +7,7 @@ import { ensureEmailSubscriptionRecord } from "./email-subscription.actions";
 import { connectToDatabase } from "@/database/mongoose";
 import OTPModel from "@/database/models/otp.model";
 import { sendOTPEmail } from "../nodemailer";
-import { ObjectId } from "mongodb";
+import {randomInt} from "node:crypto";
 
 export const signUpWithEmail = async ({
   email,
@@ -112,7 +112,7 @@ export const sendVerificationOTP = async (email: string) => {
     // Check if an OTP was recently sent (throttle)
     const existingOTP = await OTPModel.findOne({
       email,
-      createdAt: { $gt: new Date(Date.now() - 300000) }, // 5 minutes throttle
+      createdAt: { $gt: new Date(Date.now() - 300000) }, // 5-minute throttle
     });
 
     if (existingOTP) {
@@ -123,7 +123,7 @@ export const sendVerificationOTP = async (email: string) => {
     }
 
     // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = randomInt(100000, 1_000_000).toString();
 
     // Save to DB (update if exists, otherwise create)
     await OTPModel.findOneAndUpdate(

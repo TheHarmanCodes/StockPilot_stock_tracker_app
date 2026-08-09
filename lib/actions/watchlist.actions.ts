@@ -2,12 +2,10 @@
 
 import Watchlist from "@/database/models/watchlist.model";
 import { connectToDatabase } from "@/database/mongoose";
-import { headers } from "next/headers";
-import { auth } from "@/lib/better-auth/auth";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getStocksDetails } from "./finnhub.actions";
 import { setEmailSubscriptionStatus } from "./email-subscription.actions";
+import { requireVerifiedUser } from "@/lib/auth-guard";
 
 type BetterAuthUserRecord = {
   _id?: { toString: () => string } | null;
@@ -65,15 +63,12 @@ export const addToWatchList = async (
   company: string,
   revalidate: boolean = true,
 ) => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session?.user) redirect("/sign-in");
+  const user = await requireVerifiedUser();
   try {
     await connectToDatabase();
     // Check if stock already exists in watchlist
     const existingItem = await Watchlist.findOne({
-      userId: session.user.id,
+      userId: user.id,
       symbol: symbol.toUpperCase(),
     });
 
@@ -83,16 +78,16 @@ export const addToWatchList = async (
 
     // else add to watchlist
     const newItem = new Watchlist({
-      userId: session.user.id,
+      userId: user.id,
       symbol: symbol.toUpperCase(),
       company: company.trim(),
     });
     await newItem.save();
-    if (session.user.email) {
+    if (user.email) {
       // Adding a stock signals renewed interest, so we automatically resume daily summaries.
       const subscriptionResult = await setEmailSubscriptionStatus({
-        userId: session.user.id,
-        email: session.user.email,
+        userId: user.id,
+        email: user.email,
         isSubscribed: true,
         source: "watchlist_add",
       });
@@ -115,15 +110,12 @@ export const removeFromWatchlist = async (
   symbol: string,
   revalidate: boolean = true,
 ) => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session?.user) redirect("/sign-in");
+  const user = await requireVerifiedUser();
   try {
     await connectToDatabase();
     // Remove from watchlist
     await Watchlist.deleteOne({
-      userId: session.user.id,
+      userId: user.id,
       symbol: symbol.toUpperCase(),
     });
     if (revalidate) {
@@ -138,13 +130,10 @@ export const removeFromWatchlist = async (
 
 // Get user's watchlist
 export const getUserWatchlist = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session?.user) redirect("/sign-in");
+  const user = await requireVerifiedUser();
   try {
     await connectToDatabase();
-    const watchlist = await Watchlist.find({ userId: session.user.id })
+    const watchlist = await Watchlist.find({ userId: user.id })
       .sort({ addedAt: -1 })
       .lean();
 
@@ -158,12 +147,9 @@ export const getUserWatchlist = async () => {
 // Get user's watchlist with stock data
 export const getWatchlistWithData = async () => {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    if (!session?.user) redirect("/sign-in");
+    const user = await requireVerifiedUser();
 
-    const watchlist = await Watchlist.find({ userId: session.user.id })
+    const watchlist = await Watchlist.find({ userId: user.id })
       .sort({ addedAt: -1 })
       .lean();
 
