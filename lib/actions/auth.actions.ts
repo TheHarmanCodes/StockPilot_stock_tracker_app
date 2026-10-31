@@ -6,8 +6,9 @@ import { inngest } from "../inngest/client";
 import { ensureEmailSubscriptionRecord } from "./email-subscription.actions";
 import { connectToDatabase } from "@/database/mongoose";
 import OTPModel from "@/database/models/otp.model";
-import { sendOTPEmail } from "../nodemailer";
-import {randomInt} from "node:crypto";
+import { sendOTPEmail, sendPasswordResetOTPEmail } from "../nodemailer";
+import { randomInt } from "node:crypto";
+import { hashPassword } from "better-auth/crypto";
 
 export const signUpWithEmail = async ({
   email,
@@ -171,5 +172,117 @@ export const verifyOTP = async (email: string, otp: string) => {
   } catch (error) {
     console.error("Verification failed", error);
     return { success: false, error: "Verification failed" };
+  }
+};
+
+export const sendForgotPasswordOTP = async (email: string) => {
+  try {
+    const formattedEmail = email?.toLowerCase().trim();
+    if (!formattedEmail) {
+      return { success: false, error: "Please enter a valid email address." };
+    }
+
+    const mongoose = await connectToDatabase();
+    const db = mongoose.connection.db;
+    if (!db) throw new Error("Database connection failed");
+
+    // Check if user exists
+    const user = await db.collection("user").findOne({ email: formattedEmail });
+    if (!user) {
+      return { success: false, error: "No account found with this email address." };
+    }
+
+    // Check throttle (1 minute)
+    const existingOTP = await OTPModel.findOne({
+      email: formattedEmail,
+      createdAt: { $gt: new Date(Date.now() - 60000) },
+    });
+
+    if (existingOTP) {
+      return {
+        success: false,
+        error: "Please wait before requesting a new code.",
+      };
+    }
+
+    // Generate 6-digit OTP
+    const otp = randomInt(100000, 1_000_000).toString();
+
+    // Upsert into DB
+    await OTPModel.findOneAndUpdate(
+      { email: formattedEmail },
+      { otp, createdAt: new Date() },
+      { upsert: true, new: true }
+    );
+
+    // Send email
+    await sendPasswordResetOTPEmail({ email: formattedEmail, otp });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send password reset OTP", error);
+    return { success: false, error: "Failed to send reset code. Please try again." };
+  }
+};
+
+export const resetPasswordWithOTP = async ({
+  email,
+  otp,
+  newPassword,
+}: ResetPasswordFormData) => {
+  try {
+    const formattedEmail = email?.toLowerCase().trim();
+    if (!formattedEmail || !otp || !newPassword) {
+      return { success: false, error: "Please fill out all required fields." };
+    }
+
+    if (newPassword.length < 8) {
+      return { success: false, error: "Password must be at least 8 characters long." };
+    }
+
+    const mongoose = await connectToDatabase();
+    const db = mongoose.connection.db;
+    if (!db) throw new Error("Database connection failed");
+
+    const otpRecord = await OTPModel.findOne({ email: formattedEmail, otp: otp.trim() });
+    if (!otpRecord) {
+      return { success: false, error: "Invalid or expired verification code." };
+    }
+
+    const user = await db.collection("user").findOne({ email: formattedEmail });
+    if (!user) {
+      return { success: false, error: "User account not found." };
+    }
+
+    const userId = (user.id || user._id.toString()) as string;
+    const hashedPassword = await hashPassword(newPassword);
+
+    await db.collection("account").updateOne(
+      { userId, providerId: "credential" },
+      {
+        $set: {
+          password: hashedPassword,
+          updatedAt: new Date(),
+        },
+        $setOnInsert: {
+          userId,
+          providerId: "credential",
+          accountId: userId,
+          createdAt: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+
+    // Invalidate old sessions
+    await db.collection("session").deleteMany({ userId });
+
+    // Delete used OTP
+    await OTPModel.deleteOne({ _id: otpRecord._id });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Password reset failed", error);
+    return { success: false, error: "Failed to reset password. Please try again." };
   }
 };
