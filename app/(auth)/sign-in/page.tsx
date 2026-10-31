@@ -5,6 +5,7 @@ import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
 import { TextReveal } from "@/components/ui/textRevealAnimation";
 import { signInWithEmail } from "@/lib/actions/auth.actions";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
@@ -76,6 +77,15 @@ const SignIn = () => {
               minLength: 8,
             }}
           />
+
+          <div className="flex items-center justify-end -mt-3">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-yellow-500 hover:text-yellow-400 hover:underline transition-colors"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           <Button
             type="submit"

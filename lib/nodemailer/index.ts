@@ -7,6 +7,7 @@ import {
 import {
   NEWS_SUMMARY_EMAIL_TEMPLATE,
   OTP_EMAIL_TEMPLATE,
+  PASSWORD_RESET_EMAIL_TEMPLATE,
   STOCK_ALERT_LOWER_EMAIL_TEMPLATE,
   STOCK_ALERT_UPPER_EMAIL_TEMPLATE,
   WELCOME_EMAIL_TEMPLATE,
@@ -111,6 +112,28 @@ export const sendOTPEmail = async ({
     to: email,
     subject: `${otp} is your StockPilot verification code`,
     text: `Your verification code is ${otp}`,
+    html: htmlTemplate,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+export const sendPasswordResetOTPEmail = async ({
+  email,
+  otp,
+}: {
+  email: string;
+  otp: string;
+}) => {
+  const htmlTemplate = replaceTemplateVariables(PASSWORD_RESET_EMAIL_TEMPLATE, {
+    otp,
+  });
+
+  const mailOptions = {
+    from: `"StockPilot" <${NODEMAILER_EMAIL}>`,
+    to: email,
+    subject: `${otp} is your StockPilot password reset code`,
+    text: `Your password reset code is ${otp}. This code is valid for 5 minutes.`,
     html: htmlTemplate,
   };
 

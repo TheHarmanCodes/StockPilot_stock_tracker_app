@@ -17,7 +17,6 @@ const emailSubscriptionSchema = new Schema<EmailSubscriptionDocument>(
     userId: {
       type: String,
       required: true,
-      index: true,
       trim: true,
     },
     email: {
@@ -25,7 +24,6 @@ const emailSubscriptionSchema = new Schema<EmailSubscriptionDocument>(
       required: true,
       lowercase: true,
       trim: true,
-      index: true,
     },
     isSubscribed: {
       type: Boolean,

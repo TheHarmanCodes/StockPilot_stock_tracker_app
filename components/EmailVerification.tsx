@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { AlertTriangle } from "lucide-react";
 import { Button } from "./ui/button";
 import { sendVerificationOTP, verifyOTP } from "@/lib/actions/auth.actions";
 import { useRouter } from "next/navigation";
@@ -36,7 +37,7 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
     }
   }, [countdown]);
 
-  const handleSendOTP = async () => {
+  const handleSendOTP = React.useCallback(async () => {
     setIsSending(true);
     try {
       const result = await sendVerificationOTP(email);
@@ -52,12 +53,12 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
           setCountdown(60); 
         }
       }
-    } catch (error) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     } finally {
       setIsSending(false);
     }
-  };
+  }, [email]);
 
   useEffect(() => {
     // Check if we should trigger an initial OTP
@@ -72,7 +73,7 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
       const remaining = Math.ceil((300000 - (now - parseInt(lastSent))) / 1000);
       setCountdown(remaining);
     }
-  }, []);
+  }, [email, handleSendOTP]);
 
   const handleVerify = async () => {
     if (otp.length !== 6) {
@@ -91,7 +92,7 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
         setIsInvalid(true);
         toast.error(result.error || "Verification failed");
       }
-    } catch (error) {
+    } catch {
       setIsInvalid(true);
       toast.error("An error occurred. Please try again.");
     } finally {
@@ -125,7 +126,7 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
           </div>
           <DialogTitle className="text-2xl font-bold text-white mb-2">Verify your email</DialogTitle>
           <DialogDescription className="text-gray-400">
-            We've sent a 6-digit verification code to <br />
+            We&apos;ve sent a 6-digit verification code to <br />
             <span className="text-gray-200 font-medium">{email}</span>
           </DialogDescription>
         </DialogHeader>
@@ -162,8 +163,13 @@ const EmailVerification = ({ email }: EmailVerificationProps) => {
           </Button>
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-gray-500 text-sm mb-2">Didn't receive the code?</p>
+        <div className="mt-6 flex items-center justify-center gap-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 px-3.5 py-2.5 text-xs sm:text-sm text-yellow-500/90 text-center">
+          <AlertTriangle className="size-4 shrink-0 text-yellow-500" />
+          <span>Check your mailbox spam tab or junk folder if you don&apos;t see the email.</span>
+        </div>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-500 text-sm mb-2">Didn&apos;t receive the code?</p>
           <button
             onClick={handleSendOTP}
             disabled={isSending || countdown > 0}

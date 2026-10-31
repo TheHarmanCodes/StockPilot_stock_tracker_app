@@ -11,8 +11,7 @@ export function TextReveal({ word }: TextAnimation) {
   const WORD = word || "Animations";
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setReset(reset + 1);
+    setReset((r) => r + 1);
   }, []);
 
   return (
