@@ -1,18 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import FooterLink from "@/components/forms/FooterLink";
 import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
 import { TextReveal } from "@/components/ui/textRevealAnimation";
 import { signInWithEmail } from "@/lib/actions/auth.actions";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const SignIn = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -71,11 +73,25 @@ const SignIn = () => {
             placeholder="Enter your password"
             register={register}
             error={errors.password}
-            type="password"
+            type={showPassword ? "text" : "password"}
             validation={{
               required: "Password is required",
               minLength: 8,
             }}
+            rightElement={
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="text-gray-400 hover:text-white transition-colors focus:outline-none"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="size-5" />
+                ) : (
+                  <EyeIcon className="size-5" />
+                )}
+              </button>
+            }
           />
 
           <div className="flex items-center justify-end -mt-3">

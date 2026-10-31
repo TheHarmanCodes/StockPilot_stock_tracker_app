@@ -79,7 +79,10 @@ export const signUpWithEmail = async ({
     return { success: true, data: response };
   } catch (e) {
     console.error("Sign up failed (detailed):", e);
-    return { success: false, error: e instanceof Error ? e.message : "Sign up failed" };
+    return {
+      success: false,
+      error: e instanceof Error ? e.message : "Sign up failed",
+    };
   }
 };
 
@@ -156,10 +159,9 @@ export const verifyOTP = async (email: string, otp: string) => {
     }
 
     // Update user verified status
-    const result = await db.collection("user").updateOne(
-      { email },
-      { $set: { emailVerified: true } }
-    );
+    const result = await db
+      .collection("user")
+      .updateOne({ email }, { $set: { emailVerified: true } });
 
     if (result.matchedCount === 0) {
       return { success: false, error: "User not found" };
@@ -189,13 +191,16 @@ export const sendForgotPasswordOTP = async (email: string) => {
     // Check if user exists
     const user = await db.collection("user").findOne({ email: formattedEmail });
     if (!user) {
-      return { success: false, error: "No account found with this email address." };
+      return {
+        success: false,
+        error: "No account found with this email address.",
+      };
     }
 
     // Check throttle (1 minute)
     const existingOTP = await OTPModel.findOne({
       email: formattedEmail,
-      createdAt: { $gt: new Date(Date.now() - 60000) },
+      createdAt: { $gt: new Date(Date.now() - 120000) },
     });
 
     if (existingOTP) {
@@ -212,7 +217,7 @@ export const sendForgotPasswordOTP = async (email: string) => {
     await OTPModel.findOneAndUpdate(
       { email: formattedEmail },
       { otp, createdAt: new Date() },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     // Send email
@@ -221,7 +226,10 @@ export const sendForgotPasswordOTP = async (email: string) => {
     return { success: true };
   } catch (error) {
     console.error("Failed to send password reset OTP", error);
-    return { success: false, error: "Failed to send reset code. Please try again." };
+    return {
+      success: false,
+      error: "Failed to send reset code. Please try again.",
+    };
   }
 };
 
@@ -237,14 +245,20 @@ export const resetPasswordWithOTP = async ({
     }
 
     if (newPassword.length < 8) {
-      return { success: false, error: "Password must be at least 8 characters long." };
+      return {
+        success: false,
+        error: "Password must be at least 8 characters long.",
+      };
     }
 
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     if (!db) throw new Error("Database connection failed");
 
-    const otpRecord = await OTPModel.findOne({ email: formattedEmail, otp: otp.trim() });
+    const otpRecord = await OTPModel.findOne({
+      email: formattedEmail,
+      otp: otp.trim(),
+    });
     if (!otpRecord) {
       return { success: false, error: "Invalid or expired verification code." };
     }
@@ -271,7 +285,7 @@ export const resetPasswordWithOTP = async ({
           createdAt: new Date(),
         },
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     // Invalidate old sessions
@@ -283,6 +297,9 @@ export const resetPasswordWithOTP = async ({
     return { success: true };
   } catch (error) {
     console.error("Password reset failed", error);
-    return { success: false, error: "Failed to reset password. Please try again." };
+    return {
+      success: false,
+      error: "Failed to reset password. Please try again.",
+    };
   }
 };
