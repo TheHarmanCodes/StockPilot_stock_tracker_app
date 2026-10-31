@@ -45,6 +45,8 @@ declare global {
     disabled?: boolean;
     value?: string;
     autoComplete?: string;
+    rightElement?: React.ReactNode;
+    children?: React.ReactNode;
   };
 
   type Option = {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { CountrySelectField } from "@/components/forms/CountrySelectField";
 import FooterLink from "@/components/forms/FooterLink";
 import InputField from "@/components/forms/InputField";
@@ -12,12 +13,14 @@ import {
   PREFERRED_INDUSTRIES,
   RISK_TOLERANCE_OPTIONS,
 } from "@/lib/constants";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const SignUp = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -104,7 +107,7 @@ const SignUp = () => {
           placeholder="Enter a strong password"
           register={register}
           error={errors.password}
-          type="password"
+          type={showPassword ? "text" : "password"}
           validation={{
             required: "Password is required",
             pattern: {
@@ -114,6 +117,20 @@ const SignUp = () => {
                 "Password must include uppercase, lowercase, number, and special character (8–32 characters).",
             },
           }}
+          rightElement={
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="text-gray-400 hover:text-white transition-colors focus:outline-none"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOffIcon className="size-5" />
+              ) : (
+                <EyeIcon className="size-5" />
+              )}
+            </button>
+          }
         />
 
         <SelectField
